@@ -36,16 +36,32 @@ while ($true) {
         # Add all changes including removed and new files
         git add -A
         
-        $changedFiles = @(git diff --cached --name-only)
-        if ($changedFiles.Count -gt 0) {
-            $fileList = $changedFiles | Select-Object -First 3
-            $msg = "Auto-commit: updated $($fileList -join ', ')"
-            if ($changedFiles.Count -gt 3) {
-                $msg += " and others"
+        $changes = git diff --cached --name-status
+        if ($changes) {
+            $changeLines = $changes -split "`n" | Where-Object { $_.Trim() -ne '' }
+            if ($changeLines.Count -gt 0) {
+                $firstChange = $changeLines[0]
+                $status = $firstChange[0]
+                $file = $firstChange.Substring(1).Trim()
+                
+                $type = "chore"
+                if ($file -match "test") { $type = "test" }
+                elseif ($file -match "\.(js|ts|py|cs|html|jsx|tsx)$") { $type = "feat" }
+                elseif ($file -match "\.(css|scss|less)$") { $type = "style" }
+                elseif ($file -match "README|docs") { $type = "docs" }
+
+                $action = if ($status -eq 'A') { "add" } elseif ($status -eq 'D') { "remove" } else { "update" }
+                $basename = Split-Path $file -Leaf
+                
+                $msg = "${type}: $action $basename"
+                
+                if ($changeLines.Count -gt 1) {
+                    $msg += " and $( $changeLines.Count - 1 ) other files"
+                }
+                
+                # Commit autonomously
+                git commit -m $msg
             }
-            
-            # Commit autonomously
-            git commit -m $msg
         }
         
         Pop-Location
