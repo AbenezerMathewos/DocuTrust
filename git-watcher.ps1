@@ -36,8 +36,17 @@ while ($true) {
         # Add all changes including removed and new files
         git add -A
         
-        # Commit autonomously
-        git commit -m "Autocommit: muluwengel mezemran ken"
+        $changedFiles = @(git diff --cached --name-only)
+        if ($changedFiles.Count -gt 0) {
+            $fileList = $changedFiles | Select-Object -First 3
+            $msg = "Auto-commit: updated $($fileList -join ', ')"
+            if ($changedFiles.Count -gt 3) {
+                $msg += " and others"
+            }
+            
+            # Commit autonomously
+            git commit -m $msg
+        }
         
         Pop-Location
     }
