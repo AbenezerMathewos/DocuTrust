@@ -1,6 +1,6 @@
-tree 3c86556f74aec7423bd9d829f6a5032a7e90609e
-parent 9b5928941709265f7d98597fd238ff4eb95e59c9
-author Abenezer <mathewosa9@gmail.com> 1787046302 -0600
-committer Abenezer <mathewosa9@gmail.com> 1787046302 -0600
+tree 32673527709f80f46d0ed1c4220874fb0e17f8e4
+parent 3bcb7cb84aa1464befa718829eff0f1c90e958d9
+author Abenezer <mathewosa9@gmail.com> 1787046332 -0600
+committer Abenezer <mathewosa9@gmail.com> 1787046332 -0600
 
-chore: update package-lock.json and 1 other files
+feat: add page.tsx and 1 other files
