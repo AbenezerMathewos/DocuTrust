@@ -15,7 +15,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Route files
+const auth = require('./routes/authRoutes');
+const documents = require('./routes/documentRoutes');
+
+// Mount routers
+app.use('/api/auth', auth);
+app.use('/api/documents', documents);
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'DocuTrust API is running' });
 });
