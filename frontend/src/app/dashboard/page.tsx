@@ -44,7 +44,7 @@ export default function DashboardPage() {
 
   const fetchCertificates = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/certificates?institutionCode=HU");
+      const res = await api.get("/certificates?institutionCode=HU");
       setCertificates(res.data.data || []);
     } catch (err) {
       console.error(err);
@@ -53,7 +53,7 @@ export default function DashboardPage() {
 
   const fetchAuditLogs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/audit");
+      const res = await api.get("/audit");
       setAuditLogs(res.data.data || []);
     } catch (err) {
       console.error(err);
@@ -66,7 +66,7 @@ export default function DashboardPage() {
     setMessage(null);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/certificates/issue", singleForm, {
+      const response = await api.post("/certificates/issue", singleForm, {
         responseType: "blob"
       });
 
@@ -100,7 +100,7 @@ export default function DashboardPage() {
     formData.append("file", csvFile);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/certificates/batch-issue", formData, {
+      const response = await api.post("/certificates/batch-issue", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         responseType: "blob"
       });
@@ -128,7 +128,7 @@ export default function DashboardPage() {
     if (reason === null) return; // User cancelled
 
     try {
-      await axios.put(`http://localhost:5000/api/certificates/revoke/${certificateId}`, { reason });
+      await api.put(`/certificates/revoke/${certificateId}`, { reason });
       setMessage({ type: "success", text: `Certificate ${certificateId} has been revoked.` });
       fetchCertificates(); // Refresh table
     } catch (error: any) {
