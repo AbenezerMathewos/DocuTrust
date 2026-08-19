@@ -22,6 +22,8 @@ const documents = require('./routes/documentRoutes');
 // Mount routers
 app.use('/api/auth', auth);
 app.use('/api/documents', documents);
+// Routes
+app.use('/api/institutions', require('./routes/institutionRoutes'));
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'DocuTrust API is running' });

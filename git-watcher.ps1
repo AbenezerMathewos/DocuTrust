@@ -3,7 +3,7 @@ $filter = '*.*'
 
 $watcher = New-Object IO.FileSystemWatcher $folder, $filter -Property @{
     IncludeSubdirectories = $true
-    EnableRaisingEvents = $true
+    EnableRaisingEvents   = $true
 }
 
 $global:filesChanged = $false
@@ -33,31 +33,43 @@ while ($true) {
         # Change to the target directory to ensure git commands run in the correct context
         Push-Location $folder
         
-        # Add all changes including removed and new files
-        git add -A
+        # Unstage everything first to ensure clean individual commits
+        git reset > $null 2>&1
         
-        $changes = git diff --cached --name-status
-        if ($changes) {
-            $changeLines = $changes -split "`n" | Where-Object { $_.Trim() -ne '' }
-            if ($changeLines.Count -gt 0) {
-                $firstChange = $changeLines[0]
-                $status = $firstChange[0]
-                $file = $firstChange.Substring(1).Trim()
-                
+        # Get all changed files (tracked and untracked)
+        $statusLines = git status --porcelain | Where-Object { $_.Trim() -ne '' }
+        
+        foreach ($line in $statusLines) {
+            $statusCode = $line.Substring(0, 2)
+            $fileStr = $line.Substring(3).Trim()
+            
+            if ($fileStr -match ' -> ') {
+                $oldFile = ($fileStr -split ' -> ')[0].Trim('"')
+                $newFile = ($fileStr -split ' -> ')[1].Trim('"')
+                git add --all $oldFile
+                git add --all $newFile
+                $file = $newFile
+            } else {
+                $file = $fileStr.Trim('"')
+                git add --all $file
+            }
+            
+            # Only proceed if there is actually something staged
+            $staged = git diff --cached --name-only
+            if ($staged) {
                 $type = "chore"
                 if ($file -match "test") { $type = "test" }
                 elseif ($file -match "\.(js|ts|py|cs|html|jsx|tsx)$") { $type = "feat" }
                 elseif ($file -match "\.(css|scss|less)$") { $type = "style" }
                 elseif ($file -match "README|docs") { $type = "docs" }
-
-                $action = if ($status -eq 'A') { "add" } elseif ($status -eq 'D') { "remove" } else { "update" }
+                
+                $action = "update"
+                if ($statusCode -match 'A|\?\?') { $action = "add" }
+                elseif ($statusCode -match 'D') { $action = "remove" }
+                elseif ($statusCode -match 'R') { $action = "rename" }
+                
                 $basename = Split-Path $file -Leaf
-                
                 $msg = "${type}: $action $basename"
-                
-                if ($changeLines.Count -gt 1) {
-                    $msg += " and $( $changeLines.Count - 1 ) other files"
-                }
                 
                 # Commit autonomously
                 git commit -m $msg
