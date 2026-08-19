@@ -275,6 +275,14 @@ const batchIssueCertificates = async (req, res) => {
       generatedCertificates.push(certificateId);
     }
 
+    // Log action
+    await AuditLog.create({
+      action: 'ISSUE_BATCH',
+      actor: 'Registrar',
+      target: 'BATCH',
+      details: `Issued ${generatedCertificates.length} certificates`
+    });
+
     archive.finalize();
 
   } catch (error) {
