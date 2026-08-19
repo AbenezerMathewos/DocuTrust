@@ -109,6 +109,19 @@ export default function DashboardPage() {
     }
   };
 
+  const handleRevoke = async (certificateId: string) => {
+    const reason = window.prompt("Enter reason for revocation (e.g. Academic Misconduct):");
+    if (reason === null) return; // User cancelled
+
+    try {
+      await axios.put(`http://localhost:5000/api/certificates/revoke/${certificateId}`, { reason });
+      setMessage({ type: "success", text: `Certificate ${certificateId} has been revoked.` });
+      fetchCertificates(); // Refresh table
+    } catch (error: any) {
+      setMessage({ type: "error", text: error.response?.data?.message || "Failed to revoke certificate." });
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8">
       <div className="flex justify-between items-center mb-8 border-b pb-4">
@@ -222,12 +235,13 @@ export default function DashboardPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Degree</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {certificates.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">No certificates issued yet.</td>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No certificates issued yet.</td>
                 </tr>
               ) : (
                 certificates.map((cert) => (
@@ -244,6 +258,16 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(cert.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {!cert.revocation?.isRevoked && (
+                        <button 
+                          onClick={() => handleRevoke(cert.certificateId)}
+                          className="text-red-600 hover:text-red-900 font-medium bg-red-50 hover:bg-red-100 px-3 py-1 rounded transition-colors"
+                        >
+                          Revoke
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
