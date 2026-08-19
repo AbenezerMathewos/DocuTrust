@@ -9,8 +9,9 @@ export default function DashboardPage() {
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<"single" | "batch" | "history">("single");
+  const [activeTab, setActiveTab] = useState<"single" | "batch" | "history" | "audit">("single");
   const [certificates, setCertificates] = useState<any[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
   
   // Form States
   const [singleForm, setSingleForm] = useState({
