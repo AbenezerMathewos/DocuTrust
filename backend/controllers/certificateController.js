@@ -277,8 +277,41 @@ const batchIssueCertificates = async (req, res) => {
   }
 };
 
+// @desc    Get all certificates
+// @route   GET /api/certificates
+// @access  Public (for now - should be protected)
+const getAllCertificates = async (req, res) => {
+  try {
+    const { institutionCode } = req.query;
+    
+    let filter = {};
+    if (institutionCode) {
+      const institution = await Institution.findOne({ code: institutionCode.toUpperCase() });
+      if (institution) {
+        filter.issuer = institution._id;
+      } else {
+        return res.status(200).json({ success: true, count: 0, data: [] });
+      }
+    }
+
+    const certificates = await Certificate.find(filter)
+      .populate('issuer', 'name code')
+      .sort({ createdAt: -1 }); // Newest first
+
+    res.status(200).json({
+      success: true,
+      count: certificates.length,
+      data: certificates
+    });
+  } catch (error) {
+    console.error('Error fetching certificates:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   issueCertificate,
   verifyCertificate,
-  batchIssueCertificates
+  batchIssueCertificates,
+  getAllCertificates
 };
