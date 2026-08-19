@@ -30,7 +30,9 @@ export default function DashboardPage() {
 
   // Note: We disabled redirecting for the demo so you don't have to log in if you don't want to.
   // In production, uncomment the auth redirect:
-  // useEffect(() => { if (!isAuthenticated) router.push('/login'); }, [isAuthenticated]);
+  useEffect(() => { 
+    if (!isAuthenticated) router.push('/login'); 
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     if (activeTab === "history") {
