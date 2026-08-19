@@ -95,6 +95,67 @@ const issueCertificate = async (req, res) => {
   }
 };
 
+// @desc    Verify a certificate
+// @route   GET /api/certificates/verify/:certificateId
+// @access  Public
+const verifyCertificate = async (req, res) => {
+  try {
+    const { certificateId } = req.params;
+
+    // 1. Fetch certificate from DB and populate issuer details
+    const cert = await Certificate.findOne({ certificateId }).populate('issuer');
+
+    if (!cert) {
+      return res.status(404).json({ status: 'NOT_FOUND', message: 'Certificate not found in the database.' });
+    }
+
+    if (cert.revocation && cert.revocation.isRevoked) {
+      return res.status(200).json({ status: 'REVOKED', message: 'This certificate has been revoked by the issuer.' });
+    }
+
+    if (!cert.issuer.isActive) {
+      return res.status(200).json({ status: 'ISSUER_INACTIVE', message: 'The issuing institution is currently inactive.' });
+    }
+
+    // 2. Reconstruct the original payload
+    // Important: format date exactly as it was provided during issuance (YYYY-MM-DD)
+    const formattedDate = cert.credential.graduationDate.toISOString().substring(0, 10);
+    
+    const certPayload = {
+      certificateId: cert.certificateId,
+      recipientName: cert.recipient.name,
+      degree: cert.credential.degree,
+      institution: cert.issuer.name,
+      graduationDate: formattedDate
+    };
+
+    // 3. Verify the mathematical signature
+    const canonicalStr = canonicalizeCertificate(certPayload);
+    // Dynamic import to use verifySignature (ensure it's in cryptoUtils import at top)
+    const { verifySignature } = require('../utils/cryptoUtils');
+    
+    const isValid = verifySignature(canonicalStr, cert.signature, cert.issuer.publicKey);
+
+    if (isValid) {
+      return res.status(200).json({ 
+        status: 'AUTHENTIC', 
+        message: 'Certificate is authentic and mathematically verified.',
+        data: certPayload
+      });
+    } else {
+      return res.status(200).json({ 
+        status: 'TAMPERED', 
+        message: 'Certificate signature is invalid. Data may have been tampered with.' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Error verifying certificate:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
-  issueCertificate
+  issueCertificate,
+  verifyCertificate
 };
