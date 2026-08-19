@@ -309,9 +309,46 @@ const getAllCertificates = async (req, res) => {
   }
 };
 
+// @desc    Revoke a certificate
+// @route   PUT /api/certificates/revoke/:certificateId
+// @access  Public (for now - should be protected)
+const revokeCertificate = async (req, res) => {
+  try {
+    const { certificateId } = req.params;
+    const { reason } = req.body;
+
+    const certificate = await Certificate.findOne({ certificateId });
+    if (!certificate) {
+      return res.status(404).json({ message: 'Certificate not found' });
+    }
+
+    if (certificate.revocation && certificate.revocation.isRevoked) {
+      return res.status(400).json({ message: 'Certificate is already revoked' });
+    }
+
+    certificate.revocation = {
+      isRevoked: true,
+      revokedAt: new Date(),
+      reason: reason || 'No reason provided'
+    };
+
+    await certificate.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Certificate revoked successfully',
+      data: certificate
+    });
+  } catch (error) {
+    console.error('Error revoking certificate:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   issueCertificate,
   verifyCertificate,
   batchIssueCertificates,
-  getAllCertificates
+  getAllCertificates,
+  revokeCertificate
 };
