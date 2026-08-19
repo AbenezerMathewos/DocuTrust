@@ -72,7 +72,7 @@ while ($true) {
                 $msg = "${type}: $action $basename"
                 
                 # Commit autonomously
-                git commit -m $msg
+                git commit -m "$msg"
             }
         }
         
