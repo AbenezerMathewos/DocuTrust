@@ -351,6 +351,14 @@ const revokeCertificate = async (req, res) => {
 
     await certificate.save();
 
+    // Log action
+    await AuditLog.create({
+      action: 'REVOKE',
+      actor: 'Registrar',
+      target: certificateId,
+      details: `Reason: ${reason || 'No reason provided'}`
+    });
+
     res.status(200).json({
       success: true,
       message: 'Certificate revoked successfully',
