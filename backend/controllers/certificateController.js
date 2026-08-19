@@ -1,4 +1,5 @@
 const Certificate = require('../models/Certificate');
+const AuditLog = require('../models/AuditLog');
 const Institution = require('../models/Institution');
 const { canonicalizeCertificate, hashCertificate, signData } = require('../utils/cryptoUtils');
 const { generateVerificationQR } = require('../utils/qrUtils');
