@@ -74,6 +74,14 @@ const issueCertificate = async (req, res) => {
       qrData: qrDataUri // For simplicity we can store the Data URI or just the verification URL. Storing the Data URI here.
     });
 
+    // Log action
+    await AuditLog.create({
+      action: 'ISSUE_SINGLE',
+      actor: 'Registrar',
+      target: certificateId,
+      details: `Issued to ${recipientName} (${degree})`
+    });
+
     // 9. Generate PDF
     const pdfDataForDocument = {
       certificateId,
