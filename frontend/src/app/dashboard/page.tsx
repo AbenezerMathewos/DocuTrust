@@ -35,6 +35,8 @@ export default function DashboardPage() {
   useEffect(() => {
     if (activeTab === "history") {
       fetchCertificates();
+    } else if (activeTab === "audit") {
+      fetchAuditLogs();
     }
   }, [activeTab]);
 
@@ -42,6 +44,15 @@ export default function DashboardPage() {
     try {
       const res = await axios.get("http://localhost:5000/api/certificates?institutionCode=HU");
       setCertificates(res.data.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchAuditLogs = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/audit");
+      setAuditLogs(res.data.data || []);
     } catch (err) {
       console.error(err);
     }
