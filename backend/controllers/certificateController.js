@@ -155,7 +155,130 @@ const verifyCertificate = async (req, res) => {
   }
 };
 
+const csv = require('csv-parser');
+const archiver = require('archiver');
+const { Readable } = require('stream');
+
+// @desc    Issue certificates in batch via CSV
+// @route   POST /api/certificates/batch-issue
+// @access  Public (for now)
+const batchIssueCertificates = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No CSV file uploaded' });
+    }
+
+    const { institutionCode } = req.body;
+    if (!institutionCode) {
+      return res.status(400).json({ message: 'institutionCode is required' });
+    }
+
+    // 1. Load Institution
+    const institution = await Institution.findOne({ code: institutionCode.toUpperCase() });
+    if (!institution) {
+      return res.status(404).json({ message: 'Institution not found' });
+    }
+    if (!institution.isActive) {
+      return res.status(400).json({ message: 'Institution is inactive' });
+    }
+
+    // 2. Load Private Key
+    const privateKeyPath = path.join(__dirname, '..', 'keys', `${institution.code}_private.pem`);
+    if (!fs.existsSync(privateKeyPath)) {
+      return res.status(500).json({ message: 'Institution private key not found on server' });
+    }
+    const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+
+    // 3. Parse CSV
+    const results = [];
+    const stream = Readable.from(req.file.buffer.toString('utf8'));
+    
+    await new Promise((resolve, reject) => {
+      stream
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', () => resolve())
+        .on('error', (err) => reject(err));
+    });
+
+    if (results.length === 0) {
+      return res.status(400).json({ message: 'CSV file is empty or invalid' });
+    }
+
+    // 4. Setup Archiver for ZIP response
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename=batch_certificates_${institution.code}.zip`);
+    
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.pipe(res);
+
+    // 5. Process each row
+    const generatedCertificates = [];
+    for (const row of results) {
+      const { recipientName, studentId, degree, department, classification, graduationDate } = row;
+      
+      // Basic validation
+      if (!recipientName || !degree || !graduationDate) continue;
+
+      const year = new Date(graduationDate).getFullYear() || new Date().getFullYear();
+      const randomHex = crypto.randomBytes(4).toString('hex').toUpperCase();
+      const certificateId = `CERT-${institution.code}-${year}-${randomHex}`;
+
+      const certPayload = {
+        certificateId,
+        recipientName,
+        degree,
+        institution: institution.name,
+        graduationDate
+      };
+
+      const canonicalStr = canonicalizeCertificate(certPayload);
+      const hash = hashCertificate(canonicalStr);
+      const signature = signData(canonicalStr, privateKey);
+      const qrDataUri = await generateVerificationQR(certificateId);
+
+      // Save DB
+      await Certificate.create({
+        certificateId,
+        recipient: { name: recipientName, studentId },
+        issuer: institution._id,
+        credential: { degree, department, classification, graduationDate },
+        hash,
+        signature,
+        qrData: qrDataUri
+      });
+
+      // Generate PDF
+      const pdfDataForDocument = {
+        certificateId,
+        recipientName,
+        degree,
+        classification,
+        graduationDate,
+        institution: institution.name
+      };
+      
+      const pdfBuffer = await generateCertificatePDF(pdfDataForDocument, qrDataUri);
+      
+      // Add to ZIP
+      archive.append(pdfBuffer, { name: `${certificateId}_${recipientName.replace(/\s+/g, '_')}.pdf` });
+      
+      generatedCertificates.push(certificateId);
+    }
+
+    archive.finalize();
+
+  } catch (error) {
+    console.error('Error in batch issuance:', error);
+    // Note: If headers are already sent by archiver, res.status will throw. 
+    if (!res.headersSent) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+};
+
 module.exports = {
   issueCertificate,
-  verifyCertificate
+  verifyCertificate,
+  batchIssueCertificates
 };
