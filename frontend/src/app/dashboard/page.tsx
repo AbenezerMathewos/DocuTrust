@@ -169,6 +169,12 @@ export default function DashboardPage() {
         >
           History / Logs
         </button>
+        <button
+          onClick={() => setActiveTab("audit")}
+          className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === "audit" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+        >
+          Audit Trail
+        </button>
       </div>
 
       {/* Single Issuance Tab */}
