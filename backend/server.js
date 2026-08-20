@@ -15,9 +15,13 @@ connectDB();
 
 const app = express();
 
+// Basic Middleware (Must be first for CORS)
+app.use(cors());
+app.use(express.json());
+
 // Security Middleware
-// 1. Set security headers
-app.use(helmet());
+// 1. Set security headers (allow cross origin for frontend on port 3000)
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
 // 2. Prevent HTTP Param Pollution
 app.use(hpp());
@@ -29,10 +33,6 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in 10 minutes.'
 });
 app.use('/api', limiter);
-
-// Basic Middleware
-app.use(cors());
-app.use(express.json());
 
 // Route files
 const auth = require('./routes/authRoutes');
