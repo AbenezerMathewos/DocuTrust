@@ -29,13 +29,15 @@ exports.register = async (req, res) => {
     const { name, email, password, role } = req.body;
     console.log('[AUTH] Calling User.create...');
     // Create user
-    const user = await User.create({
+    const user = new User({
       name,
       email,
       password,
       role,
     });
-    console.log('[AUTH] User.create finished', user._id);
+    console.log('[AUTH] Created User instance. Calling save...');
+    await user.save();
+    console.log('[AUTH] user.save finished', user._id);
     sendTokenResponse(user, 201, res);
   } catch (error) {
     console.log('[AUTH] Error:', error.message);
