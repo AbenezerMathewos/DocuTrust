@@ -25,11 +25,12 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 // 2. Prevent HTTP Param Pollution
 app.use(hpp());
 
-// 3. Rate Limiting (100 requests per 10 mins)
+// 3. Rate Limiting (1000 requests per 10 mins in dev, 100 in prod)
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 mins
-  max: 100,
-  message: 'Too many requests from this IP, please try again in 10 minutes.'
+  windowMs: 10 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000,
+  message: 'Too many requests from this IP, please try again in 10 minutes.',
+  skip: () => process.env.NODE_ENV !== 'production', // Skip in development
 });
 app.use('/api', limiter);
 
