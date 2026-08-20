@@ -31,7 +31,7 @@ export default function VerifyPage() {
       try {
         // Hitting our backend verification API
         // Dynamically get the hostname so it works on mobile via local network IP!
-        const apiBaseUrl = 'https://technology-humanitarian-exception-toolkit.trycloudflare.com/api';
+        const apiBaseUrl = 'https://gamecube-phone-halo-replace.trycloudflare.com/api';
           
         const res = await axios.get(`${apiBaseUrl}/certificates/verify/${certificateId}`);
         setResult(res.data);
