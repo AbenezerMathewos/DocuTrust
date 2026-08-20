@@ -16,10 +16,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Security Middleware
-// 1. Set security headers
-const helmet = require('helmet');
-app.use(helmet({ crossOriginResourcePolicy: false }));
+// Security headers via manual X-Content-Type-Options header (helmet incompatible with Express v5)
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.removeHeader('X-Powered-By');
+  next();
+});
 
 // 3. Rate Limiting (1000 requests per 10 mins in dev, 100 in prod)
 const limiter = rateLimit({
