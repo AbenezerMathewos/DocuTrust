@@ -31,13 +31,9 @@ const userSchema = new mongoose.Schema({
 
 // Encrypt password using bcrypt (Mongoose v9 async pre-save: do NOT call next())
 userSchema.pre('save', async function () {
-  console.log('[USER PRE-SAVE] Started. isModified(password)=', this.isModified('password'));
   if (!this.isModified('password')) return;
-  console.log('[USER PRE-SAVE] Generating salt...');
   const salt = await bcrypt.genSalt(10);
-  console.log('[USER PRE-SAVE] Hashing password...');
   this.password = await bcrypt.hash(this.password, salt);
-  console.log('[USER PRE-SAVE] Finished hashing.');
 });
 
 // Match user entered password to hashed password in database
