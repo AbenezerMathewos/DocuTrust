@@ -7,13 +7,13 @@ const {
 } = require('../utils/cryptoUtils');
 
 describe('Cryptographic Utilities', () => {
-  let publicKeyBase64, privateKeyBase64;
+  let publicKeyPem, privateKeyPem;
 
   beforeAll(() => {
     // Generate Ed25519 test keys
     const { publicKey, privateKey } = generateKeyPairSync('ed25519');
-    publicKeyBase64 = publicKey.export({ type: 'spki', format: 'der' }).toString('base64');
-    privateKeyBase64 = privateKey.export({ type: 'pkcs8', format: 'der' }).toString('base64');
+    publicKeyPem = publicKey.export({ type: 'spki', format: 'pem' });
+    privateKeyPem = privateKey.export({ type: 'pkcs8', format: 'pem' });
   });
 
   describe('canonicalizeCertificate', () => {
