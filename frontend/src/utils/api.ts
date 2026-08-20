@@ -1,11 +1,9 @@
 import axios from 'axios';
 
 // Get API base URL dynamically to allow testing from mobile devices on local network
+// Hardcode for public demo via Cloudflare Tunnel
 const getBaseUrl = () => {
-  if (typeof window !== 'undefined') {
-    return `http://${window.location.hostname}:5000/api`;
-  }
-  return 'http://localhost:5000/api';
+  return 'https://technology-humanitarian-exception-toolkit.trycloudflare.com/api';
 };
 
 const api = axios.create({
