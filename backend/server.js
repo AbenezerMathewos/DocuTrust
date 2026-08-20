@@ -19,13 +19,10 @@ const app = express();
 // 1. Set security headers
 app.use(helmet());
 
-// 2. Prevent NoSQL injection
-app.use(mongoSanitize());
-
-// 3. Prevent HTTP Param Pollution
+// 2. Prevent HTTP Param Pollution
 app.use(hpp());
 
-// 4. Rate Limiting (100 requests per 10 mins)
+// 3. Rate Limiting (100 requests per 10 mins)
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 mins
   max: 100,
