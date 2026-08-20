@@ -17,11 +17,9 @@ app.use(cors());
 app.use(express.json());
 
 // Security Middleware
-// 1. Set security headers (allow cross origin for frontend on port 3000)
+// 1. Set security headers
+const helmet = require('helmet');
 app.use(helmet({ crossOriginResourcePolicy: false }));
-
-// 2. Prevent HTTP Param Pollution
-app.use(hpp());
 
 // 3. Rate Limiting (1000 requests per 10 mins in dev, 100 in prod)
 const limiter = rateLimit({
