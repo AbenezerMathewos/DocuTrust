@@ -8,18 +8,16 @@ const sendTokenResponse = (user, statusCode, res) => {
     expiresIn: '30d',
   });
 
-  const options = {
+  // Set cookie separately (Express v5 compatible — avoid chaining .cookie() after .status())
+  res.cookie('token', token, {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     httpOnly: true,
-  };
+  });
 
-  res
-    .status(statusCode)
-    .cookie('token', token, options)
-    .json({
-      success: true,
-      token,
-    });
+  res.status(statusCode).json({
+    success: true,
+    token,
+  });
 };
 
 // @desc    Register user
