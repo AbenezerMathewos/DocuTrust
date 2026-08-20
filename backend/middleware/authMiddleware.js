@@ -36,9 +36,10 @@ exports.protect = async (req, res, next) => {
 // Grant access to specific roles
 exports.authorize = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    console.log("AUTHORIZE MIDDLEWARE:", { user: req.user, requiredRoles: roles });
+    if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ 
-        message: `User role ${req.user.role} is not authorized to access this route`
+        message: `User role ${req.user ? req.user.role : 'UNKNOWN'} is not authorized to access this route`
       });
     }
     next();
