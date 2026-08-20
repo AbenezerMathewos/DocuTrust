@@ -3,7 +3,7 @@ const {
   canonicalizeCertificate,
   hashCertificate,
   signData,
-  verifyData
+  verifySignature
 } = require('../utils/cryptoUtils');
 
 describe('Cryptographic Utilities', () => {
