@@ -3,7 +3,7 @@ import axios from 'axios';
 // Get API base URL dynamically to allow testing from mobile devices on local network
 // Hardcode for public demo via Cloudflare Tunnel
 const getBaseUrl = () => {
-  return 'https://technology-humanitarian-exception-toolkit.trycloudflare.com/api';
+  return 'https://gamecube-phone-halo-replace.trycloudflare.com/api';
 };
 
 const api = axios.create({
