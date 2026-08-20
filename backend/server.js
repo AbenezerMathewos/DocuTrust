@@ -43,6 +43,11 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'DocuTrust API is running' });
 });
 
+app.post('/api/test', (req, res) => {
+  console.log('TEST POST', req.body);
+  res.status(200).json({ success: true, body: req.body });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
