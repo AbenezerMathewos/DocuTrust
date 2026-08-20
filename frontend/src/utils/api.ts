@@ -1,9 +1,14 @@
 import axios from 'axios';
 
-// Get API base URL dynamically to allow testing from mobile devices on local network
-// Hardcode for public demo via Cloudflare Tunnel
+// Get API base URL from environment variables for production, fallback to localhost for dev
 const getBaseUrl = () => {
-  return 'https://gamecube-phone-halo-replace.trycloudflare.com/api';
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined') {
+    return `http://${window.location.hostname}:5000/api`;
+  }
+  return 'http://localhost:5000/api';
 };
 
 const api = axios.create({
