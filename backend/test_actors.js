@@ -102,7 +102,7 @@ async function runTests() {
       const res = await axios.post(`${BASE}/certificates/issue`, {
         recipientName: 'Bob Builder',
         studentId: 'STU-TEST-002',
-        institutionCode: 'INSA',
+        institutionCode: 'HU',
         degree: 'Master of Arts',
         department: 'Art History',
         classification: 'Distinction',
