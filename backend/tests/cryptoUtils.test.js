@@ -47,15 +47,15 @@ describe('Cryptographic Utilities', () => {
     const data = "super_secret_payload";
 
     it('should sign data and verify successfully with the correct keys', () => {
-      const signature = signData(data, privateKeyBase64);
-      const isValid = verifyData(data, signature, publicKeyBase64);
+      const signature = signData(data, privateKeyPem);
+      const isValid = verifyData(data, signature, publicKeyPem);
       
       expect(isValid).toBe(true);
     });
 
     it('should fail verification if the data is tampered with', () => {
-      const signature = signData(data, privateKeyBase64);
-      const isValid = verifyData(data + "tampered", signature, publicKeyBase64);
+      const signature = signData(data, privateKeyPem);
+      const isValid = verifyData(data + "tampered", signature, publicKeyPem);
       
       expect(isValid).toBe(false);
     });
@@ -65,7 +65,7 @@ describe('Cryptographic Utilities', () => {
       
       let isValid;
       try {
-        isValid = verifyData(data, invalidSignature, publicKeyBase64);
+        isValid = verifyData(data, invalidSignature, publicKeyPem);
       } catch (e) {
         isValid = false; // Crypto library might throw on bad format
       }
