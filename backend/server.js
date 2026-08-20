@@ -13,7 +13,12 @@ connectDB();
 const app = express();
 
 // Basic Middleware (Must be first for CORS)
-app.use(cors());
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' && process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL
+    : '*', // Allow all in dev
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Security Middleware
