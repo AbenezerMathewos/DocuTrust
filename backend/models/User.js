@@ -29,15 +29,11 @@ const userSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-// Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next(); // CRITICAL: must return here to stop execution
-  }
-
+// Encrypt password using bcrypt (Mongoose v9 async pre-save: do NOT call next())
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
 });
 
 // Match user entered password to hashed password in database
