@@ -160,9 +160,15 @@ async function runTests() {
   // ─── 14. Verify Non-Existent Certificate ────────────────────
   console.log('\n─── 14. Public — Verify Non-Existent Certificate (expect NOT_FOUND)');
   try {
-    const res = await axios.get(`${BASE}/certificates/verify/FAKE-ID-000`);
-    res.data.status === 'NOT_FOUND' ? PASS(`Correctly shows NOT_FOUND`) : FAIL(`Unexpected: ${res.data.status}`);
-  } catch (e) { FAIL(`Not found: ${e.message}`); }
+    await axios.get(`${BASE}/certificates/verify/FAKE-ID-000`);
+    FAIL(`Should have returned 404`);
+  } catch (e) {
+    if (e.response?.status === 404 && e.response?.data?.status === 'NOT_FOUND') {
+      PASS(`Correctly shows NOT_FOUND`);
+    } else {
+      FAIL(`Unexpected: ${e.message}`);
+    }
+  }
 
   console.log('\n════════════════════════════════════════════');
   console.log('  Test Suite Complete');
