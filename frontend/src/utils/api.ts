@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+// Get API base URL dynamically to allow testing from mobile devices on local network
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    return `http://${window.location.hostname}:5000/api`;
+  }
+  return 'http://localhost:5000/api';
+};
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: getBaseUrl(),
 });
 
 // Add a request interceptor to attach the JWT token
