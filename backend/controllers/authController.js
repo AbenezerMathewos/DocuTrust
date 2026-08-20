@@ -3,30 +3,21 @@ const jwt = require('jsonwebtoken');
 
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
-  try {
-    console.log('[AUTH] Generating token...');
-    // Create token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret123', {
-      expiresIn: '30d',
-    });
+  // Create token
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret123', {
+    expiresIn: '30d',
+  });
 
-    console.log('[AUTH] Setting cookie...');
-    // Set cookie separately (Express v5 compatible — avoid chaining .cookie() after .status())
-    res.cookie('token', token, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-    });
+  // Set cookie separately (Express v5 compatible — avoid chaining .cookie() after .status())
+  res.cookie('token', token, {
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+  });
 
-    console.log('[AUTH] Sending JSON response...');
-    res.status(statusCode).json({
-      success: true,
-      token,
-    });
-    console.log('[AUTH] Finished sendTokenResponse.');
-  } catch (err) {
-    console.error('[AUTH] ERROR in sendTokenResponse:', err);
-    res.status(500).json({ success: false, error: 'Server Error in sendTokenResponse' });
-  }
+  res.status(statusCode).json({
+    success: true,
+    token,
+  });
 };
 
 // @desc    Register user
@@ -34,9 +25,8 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    console.log('[AUTH] Register started');
     const { name, email, password, role } = req.body;
-    console.log('[AUTH] Calling User.create...');
+
     // Create user
     const user = new User({
       name,
@@ -44,12 +34,11 @@ exports.register = async (req, res) => {
       password,
       role,
     });
-    console.log('[AUTH] Created User instance. Calling save...');
+    
     await user.save();
-    console.log('[AUTH] user.save finished', user._id);
+    
     sendTokenResponse(user, 201, res);
   } catch (error) {
-    console.log('[AUTH] Error:', error.message);
     res.status(400).json({ success: false, error: error.message });
   }
 };
