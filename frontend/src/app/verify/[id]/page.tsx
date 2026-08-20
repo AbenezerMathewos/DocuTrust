@@ -31,9 +31,7 @@ export default function VerifyPage() {
       try {
         // Hitting our backend verification API
         // Dynamically get the hostname so it works on mobile via local network IP!
-        const apiBaseUrl = typeof window !== 'undefined' 
-          ? `http://${window.location.hostname}:5000/api` 
-          : 'http://localhost:5000/api';
+        const apiBaseUrl = 'https://technology-humanitarian-exception-toolkit.trycloudflare.com/api';
           
         const res = await axios.get(`${apiBaseUrl}/certificates/verify/${certificateId}`);
         setResult(res.data);
