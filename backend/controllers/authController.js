@@ -25,8 +25,9 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
+    console.log('[AUTH] Register started');
     const { name, email, password, role } = req.body;
-
+    console.log('[AUTH] Calling User.create...');
     // Create user
     const user = await User.create({
       name,
@@ -34,9 +35,10 @@ exports.register = async (req, res) => {
       password,
       role,
     });
-
+    console.log('[AUTH] User.create finished', user._id);
     sendTokenResponse(user, 201, res);
   } catch (error) {
+    console.log('[AUTH] Error:', error.message);
     res.status(400).json({ success: false, error: error.message });
   }
 };
