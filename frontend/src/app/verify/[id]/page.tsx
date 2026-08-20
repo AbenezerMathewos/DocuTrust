@@ -29,9 +29,9 @@ export default function VerifyPage() {
 
     const verifyCertificate = async () => {
       try {
-        // Hitting our backend verification API
-        // Dynamically get the hostname so it works on mobile via local network IP!
-        const apiBaseUrl = 'https://gamecube-phone-halo-replace.trycloudflare.com/api';
+        // Use environment variable in production, fallback to dynamic hostname for dev testing
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 
+          (typeof window !== 'undefined' ? `http://${window.location.hostname}:5000/api` : 'http://localhost:5000/api');
           
         const res = await axios.get(`${apiBaseUrl}/certificates/verify/${certificateId}`);
         setResult(res.data);
