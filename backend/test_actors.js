@@ -75,13 +75,23 @@ async function runTests() {
       const res = await axios.post(`${BASE}/certificates/issue`, {
         recipientName: 'Alice Wonderland',
         studentId: 'STU-TEST-001',
+        institutionCode: 'INSA',
         degree: 'Bachelor of Science',
         department: 'Computer Science',
         classification: 'First Class',
         graduationDate: '2026-06-01',
       }, { headers: { Authorization: `Bearer ${adminToken}` } });
-      issuedCertificateId = res.data.certificate?.certificateId;
-      issuedCertificateId ? PASS(`Issued: ${issuedCertificateId}`) : FAIL(`No certificateId`);
+      // POST /issue returns PDF, so we don't get JSON back!
+      // But we can check response headers or status.
+      res.status === 201 ? PASS(`Issued: PDF received`) : FAIL(`No PDF`);
+      
+      // Let's get the certificateId from the database directly or from headers?
+      // Content-Disposition: attachment; filename=CERT-INSA-2026-XXXX.pdf
+      const contentDisp = res.headers['content-disposition'];
+      if (contentDisp) {
+        const match = contentDisp.match(/filename=([^.]+)\.pdf/);
+        if (match) issuedCertificateId = match[1];
+      }
     } catch (e) { FAIL(`Issue: ${e.response?.data?.error || e.message}`); }
   } else { FAIL('Skipped — no admin token'); }
 
@@ -92,12 +102,13 @@ async function runTests() {
       const res = await axios.post(`${BASE}/certificates/issue`, {
         recipientName: 'Bob Builder',
         studentId: 'STU-TEST-002',
+        institutionCode: 'INSA',
         degree: 'Master of Arts',
         department: 'Art History',
         classification: 'Distinction',
         graduationDate: '2026-07-01',
       }, { headers: { Authorization: `Bearer ${userToken}` } });
-      res.data.certificate?.certificateId ? PASS(`Regular user can also issue`) : FAIL(`No certificateId`);
+      res.status === 201 ? PASS(`Regular user can also issue`) : FAIL(`No PDF`);
     } catch (e) { FAIL(`User issue: ${e.response?.data?.error || e.message}`); }
   } else { FAIL('Skipped — no user token'); }
 
@@ -115,7 +126,7 @@ async function runTests() {
   if (userToken) {
     try {
       const res = await axios.get(`${BASE}/certificates`, { headers: { Authorization: `Bearer ${userToken}` } });
-      Array.isArray(res.data) ? PASS(`Got ${res.data.length} certificate(s)`) : FAIL('Response is not an array');
+      Array.isArray(res.data.data) ? PASS(`Got ${res.data.data.length} certificate(s)`) : FAIL('Response is not an array');
     } catch (e) { FAIL(`Get certs as user: ${e.response?.data?.message || e.message}`); }
   } else { FAIL('Skipped — no user token'); }
 
@@ -124,7 +135,7 @@ async function runTests() {
   if (adminToken) {
     try {
       const res = await axios.get(`${BASE}/audit`, { headers: { Authorization: `Bearer ${adminToken}` } });
-      Array.isArray(res.data) ? PASS(`Got ${res.data.length} audit log(s)`) : FAIL('Response is not an array');
+      Array.isArray(res.data.data) ? PASS(`Got ${res.data.data.length} audit log(s)`) : FAIL('Response is not an array');
     } catch (e) { FAIL(`Audit: ${e.response?.data?.message || e.message}`); }
   } else { FAIL('Skipped — no admin token'); }
 
@@ -133,7 +144,7 @@ async function runTests() {
   if (adminToken && issuedCertificateId) {
     try {
       const res = await axios.put(`${BASE}/certificates/revoke/${issuedCertificateId}`, {}, { headers: { Authorization: `Bearer ${adminToken}` } });
-      res.data.certificate?.revocation?.isRevoked ? PASS(`Certificate revoked`) : FAIL(`isRevoked not true`);
+      res.data.data?.revocation?.isRevoked ? PASS(`Certificate revoked`) : FAIL(`isRevoked not true`);
     } catch (e) { FAIL(`Revoke: ${e.response?.data?.error || e.message}`); }
   } else { FAIL('Skipped'); }
 
