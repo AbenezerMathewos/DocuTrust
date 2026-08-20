@@ -3,21 +3,30 @@ const jwt = require('jsonwebtoken');
 
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
-  // Create token
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret123', {
-    expiresIn: '30d',
-  });
+  try {
+    console.log('[AUTH] Generating token...');
+    // Create token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret123', {
+      expiresIn: '30d',
+    });
 
-  // Set cookie separately (Express v5 compatible — avoid chaining .cookie() after .status())
-  res.cookie('token', token, {
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-  });
+    console.log('[AUTH] Setting cookie...');
+    // Set cookie separately (Express v5 compatible — avoid chaining .cookie() after .status())
+    res.cookie('token', token, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    });
 
-  res.status(statusCode).json({
-    success: true,
-    token,
-  });
+    console.log('[AUTH] Sending JSON response...');
+    res.status(statusCode).json({
+      success: true,
+      token,
+    });
+    console.log('[AUTH] Finished sendTokenResponse.');
+  } catch (err) {
+    console.error('[AUTH] ERROR in sendTokenResponse:', err);
+    res.status(500).json({ success: false, error: 'Server Error in sendTokenResponse' });
+  }
 };
 
 // @desc    Register user
