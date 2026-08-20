@@ -16,16 +16,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Security headers via manual X-Content-Type-Options header (helmet incompatible with Express v5)
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.removeHeader('X-Powered-By');
-  next();
-});
+// Security Middleware
+// 1. Set security headers (allow cross origin for frontend on port 3000)
+const helmet = require('helmet');
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
-// Rate limit removed temporarily for debugging
+// 2. Rate Limiting (1000 requests per 10 mins in dev, 100 in prod)
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000,
+  message: 'Too many requests from this IP, please try again in 10 minutes.',
+  skip: () => process.env.NODE_ENV !== 'production', // Skip in development
+});
+app.use('/api', limiter);
 
 // Route files
 const auth = require('./routes/authRoutes');
@@ -41,11 +44,6 @@ app.use('/api/audit', require('./routes/auditRoutes'));
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'DocuTrust API is running' });
-});
-
-app.post('/api/test', (req, res) => {
-  console.log('TEST POST', req.body);
-  res.status(200).json({ success: true, body: req.body });
 });
 
 const PORT = process.env.PORT || 5000;
