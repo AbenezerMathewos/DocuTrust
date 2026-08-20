@@ -75,7 +75,7 @@ async function runTests() {
       const res = await axios.post(`${BASE}/certificates/issue`, {
         recipientName: 'Alice Wonderland',
         studentId: 'STU-TEST-001',
-        institutionCode: 'INSA',
+        institutionCode: 'HU',
         degree: 'Bachelor of Science',
         department: 'Computer Science',
         classification: 'First Class',
