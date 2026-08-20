@@ -25,14 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// 3. Rate Limiting (1000 requests per 10 mins in dev, 100 in prod)
-const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  max: process.env.NODE_ENV === 'production' ? 100 : 1000,
-  message: 'Too many requests from this IP, please try again in 10 minutes.',
-  skip: () => process.env.NODE_ENV !== 'production', // Skip in development
-});
-app.use('/api', limiter);
+// Rate limit removed temporarily for debugging
 
 // Route files
 const auth = require('./routes/authRoutes');
