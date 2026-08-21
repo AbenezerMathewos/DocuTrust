@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     select: false, // Don't return password by default
   },
+  studentId: {
+    type: String,
+    // Optional, mainly for Holders to map to their certificates
+  },
   role: {
     type: String,
     enum: ['root_admin', 'issuer', 'holder'],
