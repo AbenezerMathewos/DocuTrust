@@ -8,7 +8,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "DocuTrust",
-  description: "Secure document management and trust",
+  description: "Secure cryptographic credential platform",
+  manifest: "/manifest.json"
 };
 
 export default function RootLayout({
