@@ -23,9 +23,9 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
-    lowercase: true,   // auto-lowercase on save
+    enum: ['root_admin', 'issuer', 'holder'],
+    default: 'holder',
+    lowercase: true,
   },
 }, { timestamps: true });
 
