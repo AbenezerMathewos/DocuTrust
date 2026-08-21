@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('user');
       }
     }
+  }, []);
 
   const login = (newToken: string, userData: any) => {
     setToken(newToken);
