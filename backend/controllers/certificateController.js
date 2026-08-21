@@ -252,6 +252,9 @@ const batchIssueCertificates = async (req, res) => {
       const signature = signData(canonicalStr, privateKey);
       const qrDataUri = await generateVerificationQR(certificateId);
 
+      // Anchoring to Blockchain (Simulated)
+      const txReceipt = anchorToBlockchain(hash, certificateId);
+
       // Save DB
       await Certificate.create({
         certificateId,
@@ -260,7 +263,9 @@ const batchIssueCertificates = async (req, res) => {
         credential: { degree, department, classification, graduationDate },
         hash,
         signature,
-        qrData: qrDataUri
+        qrData: qrDataUri,
+        txHash: txReceipt.txHash,
+        blockNumber: txReceipt.blockNumber
       });
 
       // Generate PDF
