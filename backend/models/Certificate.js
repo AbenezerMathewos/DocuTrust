@@ -38,6 +38,13 @@ const certificateSchema = new mongoose.Schema({
     reason: { type: String },
     timestamp: { type: Date },
   },
+  txHash: {
+    type: String,
+    // The blockchain transaction hash
+  },
+  blockNumber: {
+    type: Number,
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Certificate', certificateSchema);

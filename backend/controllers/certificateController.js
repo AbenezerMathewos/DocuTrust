@@ -7,6 +7,7 @@ const { generateCertificatePDF } = require('../utils/pdfUtils');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { anchorToBlockchain } = require('../utils/blockchainSimulation');
 
 // @desc    Issue a single certificate
 // @route   POST /api/certificates/issue
@@ -55,6 +56,9 @@ const issueCertificate = async (req, res) => {
     // 7. Generate QR
     const qrDataUri = await generateVerificationQR(certificateId);
 
+    // Anchoring to Blockchain (Simulated)
+    const txReceipt = anchorToBlockchain(hash, certificateId);
+
     // 8. Save to Database
     const certificate = await Certificate.create({
       certificateId,
@@ -71,7 +75,9 @@ const issueCertificate = async (req, res) => {
       },
       hash,
       signature,
-      qrData: qrDataUri // For simplicity we can store the Data URI or just the verification URL. Storing the Data URI here.
+      qrData: qrDataUri,
+      txHash: txReceipt.txHash,
+      blockNumber: txReceipt.blockNumber
     });
 
     // Log action
@@ -370,10 +376,40 @@ const revokeCertificate = async (req, res) => {
   }
 };
 
+// @desc    Get logged in user's certificates (Self Service Portal)
+// @route   GET /api/certificates/my-documents
+// @access  Private (Holder)
+const getMyDocuments = async (req, res) => {
+  try {
+    // If student doesn't have a studentId set in their profile, they can't fetch certificates yet
+    if (!req.user.studentId && !req.user.email) {
+      return res.status(400).json({ success: false, message: 'Please update your profile with your Student ID to fetch certificates.' });
+    }
+    
+    // Find certs matching either the student ID or email as a fallback if you implement email in certs
+    // Here we rely on studentId
+    const filter = { 'recipient.studentId': req.user.studentId };
+    
+    const certificates = await Certificate.find(filter)
+      .populate('issuer', 'name code')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: certificates.length,
+      data: certificates
+    });
+  } catch (error) {
+    console.error('Error fetching student certificates:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   issueCertificate,
   verifyCertificate,
   batchIssueCertificates,
   getAllCertificates,
-  revokeCertificate
+  revokeCertificate,
+  getMyDocuments
 };
