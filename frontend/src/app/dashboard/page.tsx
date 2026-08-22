@@ -469,6 +469,71 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Details Modal */}
+      {selectedCertDetails && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="bg-gray-900 px-6 py-4 flex justify-between items-center text-white">
+              <h3 className="text-lg font-bold">Document Details</h3>
+              <button onClick={() => setSelectedCertDetails(null)} className="text-gray-400 hover:text-white transition">
+                ✕
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Student Information</h4>
+                  <p className="text-gray-800 font-semibold">{selectedCertDetails.recipient?.name || 'N/A'}</p>
+                  <p className="text-sm text-gray-500">ID: {selectedCertDetails.recipient?.studentId || 'N/A'}</p>
+                  <p className="text-sm text-gray-500">Email: {selectedCertDetails.recipient?.email || 'N/A'}</p>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Credential</h4>
+                  <p className="text-gray-800 font-semibold">{selectedCertDetails.credential?.degree || 'N/A'}</p>
+                  <p className="text-sm text-gray-500">Dept: {selectedCertDetails.credential?.department || 'N/A'}</p>
+                  <p className="text-sm text-gray-500">Class: {selectedCertDetails.credential?.classification || 'N/A'}</p>
+                  <p className="text-sm text-gray-500">Grad: {selectedCertDetails.credential?.graduationDate ? new Date(selectedCertDetails.credential.graduationDate).toLocaleDateString() : 'N/A'}</p>
+                </div>
+              </div>
+
+              <hr className="my-6 border-gray-100" />
+
+              <div>
+                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Blockchain & Security</h4>
+                <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm font-mono break-all">
+                  <p><span className="text-gray-500">Cert ID:</span> <span className="text-blue-600 font-bold">{selectedCertDetails.certificateId}</span></p>
+                  <p><span className="text-gray-500">Tx Hash:</span> {selectedCertDetails.txHash || 'Pending'}</p>
+                  <p><span className="text-gray-500">Block #:</span> {selectedCertDetails.blockNumber || 'Pending'}</p>
+                  <p><span className="text-gray-500">Issued:</span> {new Date(selectedCertDetails.createdAt).toLocaleString()}</p>
+                  <p><span className="text-gray-500">Hash:</span> {selectedCertDetails.hash || 'N/A'}</p>
+                </div>
+              </div>
+
+              {selectedCertDetails.revocation?.isRevoked && (
+                <div className="mt-6 bg-red-50 border border-red-200 p-4 rounded-lg">
+                  <h4 className="text-sm font-bold text-red-800 uppercase tracking-wider mb-1 flex items-center gap-2">
+                    ⚠️ Revoked Document
+                  </h4>
+                  <p className="text-red-700 text-sm mt-2"><strong>Reason:</strong> {selectedCertDetails.revocation.reason}</p>
+                  <p className="text-red-700 text-sm"><strong>Revoked At:</strong> {new Date(selectedCertDetails.revocation.revokedAt).toLocaleString()}</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="bg-gray-50 px-6 py-4 flex justify-end">
+              <button 
+                onClick={() => setSelectedCertDetails(null)}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
