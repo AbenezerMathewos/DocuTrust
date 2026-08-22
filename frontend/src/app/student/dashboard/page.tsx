@@ -95,45 +95,45 @@ export default function StudentDashboard() {
             {documents.map((doc: any) => (
               <div key={doc._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
                 {/* Card Header */}
-                <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-5 text-white relative">
-                  <div className={`absolute top-3 right-3 text-xs font-bold px-2 py-1 rounded-full ${doc.revocation?.isRevoked ? 'bg-red-500' : 'bg-green-400 text-green-900'}`}>
+                <div className="bg-gradient-to-r from-blue-700 to-blue-500 p-4 text-white relative">
+                  <div className={`absolute top-3 right-3 text-xs font-bold px-2 py-0.5 rounded-full ${doc.revocation?.isRevoked ? 'bg-red-500 text-white' : 'bg-green-400 text-green-900'}`}>
                     {doc.revocation?.isRevoked ? '🚫 Revoked' : '✅ Valid'}
                   </div>
-                  <div className="text-xs text-teal-200 mb-1">{doc.issuer?.name}</div>
-                  <h3 className="text-lg font-bold leading-tight">{doc.credential?.degree}</h3>
+                  <div className="text-xs text-blue-200 mb-0.5">{doc.issuer?.name}</div>
+                  <h3 className="text-base font-bold leading-tight">{doc.credential?.degree}</h3>
                   {doc.credential?.department && (
-                    <p className="text-teal-200 text-sm mt-1">{doc.credential.department}</p>
+                    <p className="text-blue-200 text-xs mt-0.5">{doc.credential.department}</p>
                   )}
                 </div>
 
                 {/* Card Body */}
-                <div className="p-5">
-                  <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+                <div className="p-4">
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-3">
                     <div>
-                      <span className="text-gray-400 text-xs block">Classification</span>
+                      <span className="text-gray-400 block">Classification</span>
                       <span className="font-semibold text-gray-800">{doc.credential?.classification || '—'}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 text-xs block">Graduated</span>
+                      <span className="text-gray-400 block">Graduated</span>
                       <span className="font-semibold text-gray-800">{new Date(doc.credential?.graduationDate).toLocaleDateString()}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 text-xs block">Certificate ID</span>
+                      <span className="text-gray-400 block">Certificate ID</span>
                       <span className="font-mono text-xs text-blue-600">{doc.certificateId}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 text-xs block">Blockchain Block</span>
-                      <span className="font-mono text-xs text-purple-600">#{doc.blockNumber || '—'}</span>
+                      <span className="text-gray-400 block">Block #</span>
+                      <span className="font-mono text-xs text-purple-600">{doc.blockNumber ?? '—'}</span>
                     </div>
                   </div>
 
                   {/* Blockchain Proof */}
-                  <div className="bg-gray-50 rounded-lg p-2 text-xs text-gray-500 font-mono truncate mb-4">
-                    ⛓️ tx: {doc.txHash ? doc.txHash.substring(0, 30) + '...' : 'Pending'}
+                  <div className="bg-gray-50 rounded-lg p-2 text-xs text-gray-400 font-mono truncate mb-3">
+                    ⛓️ {doc.txHash ? doc.txHash.substring(0, 32) + '...' : 'Pending'}
                   </div>
 
                   <button onClick={() => handleDownload(doc.certificateId)}
-                    className="w-full bg-teal-600 text-white py-2.5 rounded-xl hover:bg-teal-700 transition-colors font-semibold text-sm flex items-center justify-center gap-2">
+                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-xs flex items-center justify-center gap-2">
                     ⬇️ Download Secure PDF
                   </button>
                 </div>
