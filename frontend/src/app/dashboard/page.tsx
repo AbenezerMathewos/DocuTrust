@@ -353,6 +353,28 @@ export default function DashboardPage() {
               )}
             </tbody>
           </table>
+          
+          <div className="flex justify-between items-center text-sm text-gray-600 mt-4 px-2">
+            <div>
+              Showing page {pagination.page} of {pagination.pages} ({pagination.total} total)
+            </div>
+            <div className="flex gap-2">
+              <button 
+                disabled={page === 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                className="px-3 py-1 bg-gray-100 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button 
+                disabled={page >= pagination.pages}
+                onClick={() => setPage(p => p + 1)}
+                className="px-3 py-1 bg-gray-100 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
