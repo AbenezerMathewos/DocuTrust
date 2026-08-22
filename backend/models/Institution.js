@@ -15,6 +15,16 @@ const institutionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  currentKeyVersion: {
+    type: Number,
+    default: 1,
+  },
+  keyHistory: [{
+    version: Number,
+    publicKey: String,
+    revokedAt: Date,
+    revokedReason: String
+  }],
   contactEmail: {
     type: String,
     required: true,
