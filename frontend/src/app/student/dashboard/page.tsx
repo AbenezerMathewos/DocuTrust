@@ -226,10 +226,16 @@ export default function StudentDashboard() {
                     ⛓️ {doc.txHash ? doc.txHash.substring(0, 32) + '...' : 'Pending'}
                   </div>
 
-                  <button onClick={() => handleDownload(doc.certificateId)}
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-xs flex items-center justify-center gap-2">
-                    ⬇️ Download Secure PDF
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleView(doc.certificateId)}
+                      className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-bold text-xs flex items-center justify-center gap-1 border border-gray-200">
+                      👁️ View PDF
+                    </button>
+                    <button onClick={() => handleDownload(doc.certificateId)}
+                      className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-bold text-xs flex items-center justify-center gap-1">
+                      ⬇️ Download
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
