@@ -126,6 +126,60 @@ const toggleInstitutionStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// @desc    Rotate keys for institution (In case of compromise)
+// @route   POST /api/institutions/:id/rotate-keys
+// @access  Private (Root Admin only)
+const rotateInstitutionKey = async (req, res) => {
+  try {
+    const institution = await Institution.findById(req.params.id);
+    if (!institution) {
+      return res.status(404).json({ message: 'Institution not found' });
+    }
+
+    const { reason } = req.body;
+
+    // 1. Mark the current key as revoked in history
+    const currentKeyObj = institution.keyHistory.find(k => k.version === institution.currentKeyVersion);
+    if (currentKeyObj) {
+      currentKeyObj.revokedAt = new Date();
+      currentKeyObj.revokedReason = reason || 'Security Key Rotation';
+    }
+
+    // 2. Generate new Ed25519 keypair
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519', {
+      publicKeyEncoding: { type: 'spki', format: 'pem' },
+      privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
+    });
+
+    // 3. Increment version
+    const newVersion = (institution.currentKeyVersion || 1) + 1;
+
+    // 4. Save new private key to disk
+    const keysDir = path.join(__dirname, '..', 'keys');
+    if (!fs.existsSync(keysDir)) fs.mkdirSync(keysDir, { recursive: true });
+    
+    const privateKeyPath = path.join(keysDir, `${institution.code}_v${newVersion}_private.pem`);
+    fs.writeFileSync(privateKeyPath, privateKey);
+
+    // 5. Update Institution in DB
+    institution.currentKeyVersion = newVersion;
+    institution.publicKey = publicKey; // update active key
+    institution.keyHistory.push({
+      version: newVersion,
+      publicKey: publicKey
+    });
+
+    const updatedInstitution = await institution.save();
+
+    res.json({
+      success: true,
+      message: `Keys successfully rotated to version ${newVersion}`,
+      institution: updatedInstitution
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   createInstitution,
@@ -133,4 +187,5 @@ module.exports = {
   getInstitutionById,
   updateInstitution,
   toggleInstitutionStatus,
+  rotateInstitutionKey,
 };
