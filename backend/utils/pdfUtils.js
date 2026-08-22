@@ -102,12 +102,7 @@ const generateCertificatePDF = (certData, qrDataUri) => {
       doc.fontSize(9).font('Courier').fillColor('#94a3b8')
          .text('Secured by DocuTrust Ed25519 Cryptography', width/2, height - 40, { align: 'right', width: width/2 - 50 });
 
-      // Prevent pdfkit from adding any automatic blank pages
-      const pages = doc.bufferedPageRange();
-      for (let i = 1; i < pages.count; i++) {
-        // Technically shouldn't happen with absolute positioning, but just in case
-      }
-
+      // End the document
       doc.end();
     } catch (error) {
       reject(error);
