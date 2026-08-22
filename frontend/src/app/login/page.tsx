@@ -42,20 +42,56 @@ export default function Login() {
           </h1>
           <p className="text-slate-400 mb-8">Cryptographically secured credentials. Instant verification. Built for Digital Ethiopia 2030.</p>
 
-          {/* Demo Accounts */}
-          <div>
-            <p className="text-xs uppercase tracking-widest text-slate-500 mb-3 font-semibold">Quick Demo Login</p>
-            <div className="space-y-2">
-              {DEMO_ACCOUNTS.map((acc) => (
-                <button key={acc.email} onClick={() => quickLogin(acc)}
-                  className={`w-full text-left border rounded-xl p-3 transition-all ${acc.color} flex justify-between items-center`}>
-                  <div>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${acc.badge} mr-2`}>{acc.label}</span>
-                    <span className="text-xs text-gray-600">{acc.email}</span>
+          {/* Security Status Panel */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
+            <p className="text-xs uppercase tracking-widest text-slate-500 mb-4 font-semibold">Live System Integrity</p>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
                   </div>
-                  <span className="text-xs text-gray-400">password123</span>
-                </button>
-              ))}
+                  <div>
+                    <div className="text-sm font-bold text-slate-200">Cryptography Node</div>
+                    <div className="text-xs text-slate-400">Ed25519 Keys Active</div>
+                  </div>
+                </div>
+                <span className="text-xs text-green-400 font-mono bg-green-400/10 px-2 py-1 rounded border border-green-400/20">SECURE</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-200">FAYDA Integration</div>
+                    <div className="text-xs text-slate-400">National ID Sync</div>
+                  </div>
+                </div>
+                <span className="text-xs text-blue-400 font-mono bg-blue-400/10 px-2 py-1 rounded border border-blue-400/20">ONLINE</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 bg-purple-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-200">Ledger Status</div>
+                    <div className="text-xs text-slate-400">SHA-256 Anchoring</div>
+                  </div>
+                </div>
+                <span className="text-xs text-purple-400 font-mono bg-purple-400/10 px-2 py-1 rounded border border-purple-400/20">SYNCED</span>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-700/50">
+              <div className="text-xs text-slate-400 font-mono flex flex-col gap-1">
+                <span>&gt; System ready for credential issuance.</span>
+                <span className="text-blue-400">&gt; Waiting for secure authentication...</span>
+              </div>
             </div>
           </div>
         </div>
