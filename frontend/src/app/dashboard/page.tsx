@@ -225,6 +225,10 @@ export default function DashboardPage() {
               <input type="email" value={singleForm.recipientEmail} onChange={(e) => setSingleForm({...singleForm, recipientEmail: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. student@email.com" />
             </div>
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Student Phone (Optional SMS)</label>
+              <input type="tel" value={singleForm.recipientPhone || ""} onChange={(e) => setSingleForm({...singleForm, recipientPhone: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. +251911..." />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Student ID (Optional)</label>
               <input type="text" value={singleForm.studentId} onChange={(e) => setSingleForm({...singleForm, studentId: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. ID-12345" />
             </div>
