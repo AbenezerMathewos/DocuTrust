@@ -162,12 +162,22 @@ export default function DashboardPage() {
       const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${certId}.pdf`);
+      link.setAttribute('download', `DocuTrust_${certId}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (error: any) {
       setMessage({ type: "error", text: "Failed to download PDF." });
+    }
+  };
+
+  const handleView = async (certId: string) => {
+    try {
+      const res = await api.get(`/certificates/download/${certId}`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      window.open(url, '_blank');
+    } catch (error: any) {
+      setMessage({ type: "error", text: "Failed to view PDF." });
     }
   };
 
