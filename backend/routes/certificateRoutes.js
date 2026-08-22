@@ -18,5 +18,7 @@ router.get('/download/:certificateId', protect, downloadCertificate);
 // Profile routes
 router.get('/me', protect, getMyProfile);
 router.put('/me', protect, updateMyProfile);
+// Legacy Claim Route
+router.post('/claim', protect, authorize('holder'), require('../controllers/certificateController').claimLegacyDocument);
 
 module.exports = router;
