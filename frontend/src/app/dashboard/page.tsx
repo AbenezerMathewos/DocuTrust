@@ -157,9 +157,21 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8">
+    <div className="max-w-6xl mx-auto p-4 md:p-8 relative">
+      {/* Animated Dashboard Watermark */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-[0.03] mix-blend-multiply">
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes slow-pan {
+            0%, 100% { transform: scale(1.1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-10px, -15px); }
+          }
+          .animate-bg-pan { animation: slow-pan 12s ease-in-out infinite; }
+        `}} />
+        <img src="/crypto_lock.jpg" alt="" className="w-full h-full object-cover animate-bg-pan grayscale blur-[2px]" aria-hidden="true" />
+      </div>
+
       {/* Styled Blue Header */}
-      <div className="bg-blue-700 text-white rounded-2xl px-6 py-5 mb-6 overflow-hidden relative">
+      <div className="bg-blue-700 text-white rounded-2xl px-6 py-5 mb-6 overflow-hidden relative z-10 shadow-lg">
         <div className="text-xs font-mono text-blue-200/20 whitespace-nowrap overflow-hidden mb-2 select-none">
           a3f8b2c1d9e4f7a0b5c2d8e1f6a3b9c4d7e0f5a2b8c5d1e9f3... sha256 ... verify ... sign ...
         </div>
