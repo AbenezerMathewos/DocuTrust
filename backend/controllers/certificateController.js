@@ -1,9 +1,11 @@
 const Certificate = require('../models/Certificate');
 const AuditLog = require('../models/AuditLog');
 const Institution = require('../models/Institution');
+const User = require('../models/User');
 const { canonicalizeCertificate, hashCertificate, signData } = require('../utils/cryptoUtils');
 const { generateVerificationQR } = require('../utils/qrUtils');
 const { generateCertificatePDF } = require('../utils/pdfUtils');
+const { sendCertificateNotification } = require('../utils/emailUtils');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
