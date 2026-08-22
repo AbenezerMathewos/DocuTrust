@@ -156,6 +156,21 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDownload = async (certId: string) => {
+    try {
+      const res = await api.get(`/certificates/download/${certId}`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${certId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error: any) {
+      setMessage({ type: "error", text: "Failed to download PDF." });
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 relative">
       {/* Animated Dashboard Watermark */}
