@@ -35,6 +35,7 @@ export default function DashboardPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, pages: 1 });
+  const [selectedCertDetails, setSelectedCertDetails] = useState<any | null>(null);
 
   useEffect(() => { 
     if (!isAuthenticated) router.push('/login'); 
