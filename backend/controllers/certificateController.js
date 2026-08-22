@@ -148,7 +148,7 @@ const verifyCertificate = async (req, res) => {
     }
 
     if (cert.revocation && cert.revocation.isRevoked) {
-      return res.status(200).json({ status: 'REVOKED', message: 'This certificate has been revoked by the issuer.' });
+      return res.status(200).json({ status: 'REVOKED', message: `This certificate was revoked. Reason: ${cert.revocation.reason || 'Not specified'}` });
     }
 
     if (!cert.issuer.isActive) {
