@@ -75,7 +75,8 @@ const issueCertificate = async (req, res) => {
       recipient: {
         name: recipientName,
         studentId,
-        email: recipientEmail
+        email: recipientEmail,
+        phone: recipientPhone
       },
       issuer: institution._id,
       credential: {
