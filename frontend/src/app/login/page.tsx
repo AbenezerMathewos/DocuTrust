@@ -51,7 +51,7 @@ export default function Login() {
             <span className="text-blue-400">Document Trust</span><br/>
             Infrastructure
           </h1>
-          <p className="text-slate-400 mb-8">Cryptographically secured credentials. Instant verification. Built for Digital Ethiopia 2025.</p>
+          <p className="text-slate-400 mb-8">Cryptographically secured credentials. Instant verification. Built for Digital Ethiopia 2030.</p>
 
           {/* Demo Accounts */}
           <div>
