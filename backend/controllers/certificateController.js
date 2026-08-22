@@ -16,7 +16,7 @@ const { anchorToBlockchain } = require('../utils/blockchainSimulation');
 // @access  Private
 const issueCertificate = async (req, res) => {
   try {
-    const { recipientName, recipientEmail, studentId, institutionCode, degree, department, classification, graduationDate, expiresAt } = req.body;
+    const { recipientName, recipientEmail, recipientPhone, studentId, institutionCode, degree, department, classification, graduationDate, expiresAt } = req.body;
 
     // 1. Load Institution
     const institution = await Institution.findOne({ code: institutionCode.toUpperCase() });
