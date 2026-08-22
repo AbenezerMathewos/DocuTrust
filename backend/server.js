@@ -37,11 +37,9 @@ app.use('/api', limiter);
 
 // Route files
 const auth = require('./routes/authRoutes');
-const documents = require('./routes/documentRoutes');
 
 // Mount routers
 app.use('/api/auth', auth);
-app.use('/api/documents', documents);
 // Routes
 app.use('/api/institutions', require('./routes/institutionRoutes'));
 app.use('/api/certificates', require('./routes/certificateRoutes'));
