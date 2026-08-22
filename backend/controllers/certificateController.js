@@ -28,11 +28,18 @@ const issueCertificate = async (req, res) => {
     }
 
     // 2. Load Private Key
-    const privateKeyPath = path.join(__dirname, '..', 'keys', `${institution.code}_private.pem`);
-    if (!fs.existsSync(privateKeyPath)) {
-      return res.status(500).json({ message: 'Institution private key not found on server' });
+    const keyVersion = institution.currentKeyVersion || 1;
+    const privateKeyPath = path.join(__dirname, '..', 'keys', `${institution.code}_v${keyVersion}_private.pem`);
+    
+    // Fallback to unversioned if testing/legacy
+    let actualPath = privateKeyPath;
+    if (!fs.existsSync(actualPath)) {
+      actualPath = path.join(__dirname, '..', 'keys', `${institution.code}_private.pem`);
+      if (!fs.existsSync(actualPath)) {
+         return res.status(500).json({ message: 'Institution private key not found on server' });
+      }
     }
-    const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+    const privateKey = fs.readFileSync(actualPath, 'utf8');
 
     // 3. Generate Certificate ID (CERT-<code>-<year>-<randomHex>)
     const year = new Date(graduationDate).getFullYear() || new Date().getFullYear();
