@@ -125,9 +125,10 @@ export default function StudentDashboard() {
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1">University Code</label>
                 <select required value={claimForm.institutionCode} onChange={e => setClaimForm({...claimForm, institutionCode: e.target.value})} className="w-full border rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
-                  <option value="HU">Hawassa University (HU)</option>
-                  <option value="AAU">Addis Ababa University (AAU)</option>
-                  <option value="JU">Jimma University (JU)</option>
+                  {institutions.map(inst => (
+                    <option key={inst.code} value={inst.code}>{inst.name} ({inst.code})</option>
+                  ))}
+                  {institutions.length === 0 && <option value="">Loading institutions...</option>}
                 </select>
               </div>
               <div>
