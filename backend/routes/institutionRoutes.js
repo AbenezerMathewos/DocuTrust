@@ -20,4 +20,7 @@ router.route('/:id')
 router.route('/:id/status')
   .patch(protect, authorize('root_admin'), toggleInstitutionStatus);
 
+router.route('/:id/rotate-keys')
+  .post(protect, authorize('root_admin'), require('../controllers/institutionController').rotateInstitutionKey);
+
 module.exports = router;
