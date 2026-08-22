@@ -13,10 +13,10 @@ const { anchorToBlockchain } = require('../utils/blockchainSimulation');
 
 // @desc    Issue a single certificate
 // @route   POST /api/certificates/issue
-// @access  Public (for now)
+// @access  Private
 const issueCertificate = async (req, res) => {
   try {
-    const { recipientName, studentId, institutionCode, degree, department, classification, graduationDate } = req.body;
+    const { recipientName, recipientEmail, studentId, institutionCode, degree, department, classification, graduationDate, expiresAt } = req.body;
 
     // 1. Load Institution
     const institution = await Institution.findOne({ code: institutionCode.toUpperCase() });
@@ -45,7 +45,8 @@ const issueCertificate = async (req, res) => {
       recipientName,
       degree,
       institution: institution.name,
-      graduationDate
+      graduationDate,
+      ...(expiresAt && { expiresAt })
     };
 
     // 5. Canonicalize & Hash
@@ -66,14 +67,16 @@ const issueCertificate = async (req, res) => {
       certificateId,
       recipient: {
         name: recipientName,
-        studentId
+        studentId,
+        email: recipientEmail
       },
       issuer: institution._id,
       credential: {
         degree,
         department,
         classification,
-        graduationDate
+        graduationDate,
+        expiresAt
       },
       hash,
       signature,
@@ -85,7 +88,7 @@ const issueCertificate = async (req, res) => {
     // Log action
     await AuditLog.create({
       action: 'ISSUE_SINGLE',
-      actor: 'Registrar',
+      actor: req.user ? req.user.name : institution.name,
       target: certificateId,
       details: `Issued to ${recipientName} (${degree})`
     });
