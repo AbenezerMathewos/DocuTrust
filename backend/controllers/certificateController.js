@@ -559,6 +559,55 @@ const updateMyProfile = async (req, res) => {
   }
 };
 
+// @desc    Claim a legacy document using Fayda ID
+// @route   POST /api/certificates/claim
+// @access  Private (Holder)
+const claimLegacyDocument = async (req, res) => {
+  try {
+    const { faydaId, institutionCode, studentId, graduationYear } = req.body;
+
+    if (!faydaId || faydaId.length < 12) {
+      return res.status(400).json({ message: 'Invalid FAYDA FAN. Must be at least 12 digits.' });
+    }
+
+    // MOCK FAYDA API CALL
+    // In production, this would call Fayda Foundation API to verify identity matching
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // 1. Find Institution
+    const institution = await Institution.findOne({ code: institutionCode.toUpperCase() });
+    if (!institution) {
+      return res.status(404).json({ message: 'Institution not found.' });
+    }
+
+    // 2. Find Certificate
+    // Search by studentId and institution, and check if graduationDate contains the year
+    const certificates = await Certificate.find({
+      'recipient.studentId': studentId,
+      issuer: institution._id
+    });
+
+    const cert = certificates.find(c => new Date(c.credential.graduationDate).getFullYear().toString() === graduationYear.toString());
+
+    if (!cert) {
+      return res.status(404).json({ message: 'No matching legacy document found.' });
+    }
+
+    if (cert.recipient.email && cert.recipient.email === req.user.email) {
+      return res.status(400).json({ message: 'Document is already linked to your account.' });
+    }
+
+    // 3. Link Document
+    cert.recipient.email = req.user.email;
+    await cert.save();
+
+    res.status(200).json({ success: true, message: 'Identity verified via FAYDA. Document claimed securely.' });
+  } catch (error) {
+    console.error('Error claiming legacy document:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   issueCertificate,
   verifyCertificate,
@@ -568,5 +617,6 @@ module.exports = {
   getMyDocuments,
   downloadCertificate,
   getMyProfile,
-  updateMyProfile
+  updateMyProfile,
+  claimLegacyDocument
 };
