@@ -142,10 +142,12 @@ const issueCertificate = async (req, res) => {
       ).catch(err => console.error('SMS error:', err));
     }
 
-    // 11. Return PDF to client
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${certificateId}.pdf`);
-    res.status(201).send(pdfBuffer);
+    // 11. Return JSON success instead of direct PDF download
+    res.status(201).json({
+      success: true,
+      message: 'Certificate issued and anchored to blockchain successfully',
+      certificateId: certificateId
+    });
 
 
   } catch (error) {
