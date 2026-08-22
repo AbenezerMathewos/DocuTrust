@@ -101,10 +101,23 @@ const issueCertificate = async (req, res) => {
     };
     const pdfBuffer = await generateCertificatePDF(pdfDataForDocument, qrDataUri);
 
-    // 10. Return PDF to client
+    // 10. Send Email Notification to Holder (non-blocking)
+    const holderUser = await User.findOne({ studentId: studentId });
+    if (holderUser && holderUser.email) {
+      sendCertificateNotification(
+        holderUser.email,
+        recipientName,
+        degree,
+        institution.name,
+        certificateId
+      ).catch(err => console.error('Email error:', err));
+    }
+
+    // 11. Return PDF to client
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=${certificateId}.pdf`);
     res.status(201).send(pdfBuffer);
+
 
   } catch (error) {
     console.error('Error issuing certificate:', error);
