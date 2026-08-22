@@ -138,11 +138,16 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8">
-      <div className="flex justify-between items-center mb-8 border-b pb-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Registrar Dashboard</h1>
-          <p className="text-gray-500">Manage, issue, and track certificates for Hawassa University (HU)</p>
+      {/* Styled Blue Header */}
+      <div className="bg-blue-700 text-white rounded-2xl px-6 py-5 mb-6 overflow-hidden relative">
+        <div className="text-xs font-mono text-blue-200/20 whitespace-nowrap overflow-hidden mb-2 select-none">
+          a3f8b2c1d9e4f7a0b5c2d8e1f6a3b9c4d7e0f5a2b8c5d1e9f3... sha256 ... verify ... sign ...
         </div>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs font-bold tracking-widest bg-white/20 px-3 py-0.5 rounded-full uppercase">🎓 Issuer Portal</span>
+        </div>
+        <h1 className="text-xl font-bold">Registrar Dashboard</h1>
+        <p className="text-blue-200 text-sm mt-0.5">Issue and manage cryptographically signed certificates</p>
       </div>
 
       {message && (
