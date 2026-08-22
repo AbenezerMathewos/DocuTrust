@@ -159,7 +159,7 @@ export default function DashboardPage() {
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 relative">
       {/* Animated Dashboard Watermark */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-[0.03] mix-blend-multiply">
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-10">
         <style dangerouslySetInnerHTML={{__html: `
           @keyframes slow-pan {
             0%, 100% { transform: scale(1.1) translate(0, 0); }
