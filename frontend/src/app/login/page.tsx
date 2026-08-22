@@ -43,9 +43,31 @@ export default function Login() {
           <p className="text-slate-400 mb-8">Cryptographically secured credentials. Instant verification. Built for Digital Ethiopia 2030.</p>
 
           {/* Cryptographic Visual */}
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 group">
-            <div className="absolute inset-0 bg-blue-900/20 mix-blend-overlay group-hover:bg-transparent transition-all duration-500 z-10 pointer-events-none"></div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes float {
+              0%, 100% { transform: translateY(0) scale(1.05); }
+              50% { transform: translateY(-8px) scale(1.08); }
+            }
+            .animate-float {
+              animation: float 6s ease-in-out infinite;
+            }
+            @keyframes scan {
+              0% { top: 0%; opacity: 0; }
+              10% { opacity: 1; }
+              90% { opacity: 1; }
+              100% { top: 100%; opacity: 0; }
+            }
+            .animate-scan {
+              animation: scan 4s linear infinite;
+            }
+          `}} />
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 group h-80">
+            {/* Dynamic Overlay */}
+            <div className="absolute inset-0 bg-blue-900/30 mix-blend-overlay animate-pulse z-10 pointer-events-none"></div>
             
+            {/* Cryptographic Laser Scanner */}
+            <div className="absolute left-0 right-0 h-1 bg-blue-400/50 blur-[1px] shadow-[0_0_15px_3px_rgba(59,130,246,0.6)] z-15 animate-scan pointer-events-none"></div>
+
             {/* Country Watermark Overlay */}
             <div className="absolute top-6 left-6 z-20 flex flex-col pointer-events-none select-none">
               <span className="text-3xl md:text-4xl font-black text-white tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] opacity-90">Ethiopia</span>
@@ -55,8 +77,9 @@ export default function Login() {
             <img 
               src="/crypto_lock.jpg" 
               alt="Cryptographic Security Matrix" 
-              className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out opacity-90"
+              className="w-full h-full object-cover animate-float opacity-90"
             />
+            
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
               <div className="text-xs text-blue-300 font-mono flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span>
