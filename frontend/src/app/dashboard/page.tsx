@@ -24,7 +24,8 @@ export default function DashboardPage() {
     department: "",
     classification: "",
     graduationDate: "",
-    expiresAt: ""
+    expiresAt: "",
+    recipientPhone: ""
   });
   
   const [csvFile, setCsvFile] = useState<File | null>(null);
