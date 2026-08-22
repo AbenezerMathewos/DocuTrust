@@ -9,9 +9,10 @@ const generateCertificatePDF = (certData, qrDataUri) => {
       const doc = new PDFDocument({
         layout: 'landscape',
         size: 'A4',
-        margins: { top: 40, bottom: 40, left: 40, right: 40 },
-        bufferPages: true // Keep it all on one page
+        margin: 0,
+        autoFirstPage: false
       });
+      doc.addPage({ margin: 0 });
 
       const buffers = [];
       doc.on('data', buffers.push.bind(buffers));
