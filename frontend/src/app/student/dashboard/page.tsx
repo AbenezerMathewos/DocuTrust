@@ -151,7 +151,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-6 py-8 relative z-10">
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-base font-bold text-gray-800">Your Verified Credentials</h2>
           <div className="flex gap-3">
