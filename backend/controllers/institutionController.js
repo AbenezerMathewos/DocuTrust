@@ -29,13 +29,13 @@ const createInstitution = async (req, res) => {
       }
     });
 
-    // Save Private Key to secure server storage (local file system for now)
+    // Save Private Key with version 1
     const keysDir = path.join(__dirname, '..', 'keys');
     if (!fs.existsSync(keysDir)) {
       fs.mkdirSync(keysDir, { recursive: true });
     }
     
-    const privateKeyPath = path.join(keysDir, `${code.toUpperCase()}_private.pem`);
+    const privateKeyPath = path.join(keysDir, `${code.toUpperCase()}_v1_private.pem`);
     fs.writeFileSync(privateKeyPath, privateKey);
 
     const institution = await Institution.create({
@@ -43,6 +43,11 @@ const createInstitution = async (req, res) => {
       code: code.toUpperCase(),
       contactEmail,
       publicKey: publicKey,
+      currentKeyVersion: 1,
+      keyHistory: [{
+        version: 1,
+        publicKey: publicKey
+      }]
     });
 
     res.status(201).json(institution);
