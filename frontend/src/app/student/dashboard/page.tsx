@@ -27,17 +27,28 @@ export default function StudentDashboard() {
   };
 
   const handleDownload = async (certId: string) => {
+  const handleView = async (certId: string) => {
     try {
       const res = await api.get(`/certificates/download/${certId}`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      window.open(url, '_blank');
+    } catch {
+      alert('Failed to open PDF view.');
+    }
+  };
+
+  const handleDownload = async (certId: string) => {
+    try {
+      const res = await api.get(`/certificates/download/${certId}`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${certId}.pdf`);
+      link.setAttribute('download', `DocuTrust_Certificate_${certId}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch {
-      alert('Download feature coming soon. Your certificate is securely stored in the system.');
+      alert('Failed to download PDF.');
     }
   };
 
