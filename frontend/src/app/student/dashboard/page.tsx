@@ -41,8 +41,75 @@ export default function StudentDashboard() {
     }
   };
 
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [claimForm, setClaimForm] = useState({ faydaId: '', institutionCode: 'HU', studentId: '', graduationYear: '' });
+  const [claimLoading, setClaimLoading] = useState(false);
+  const [claimMessage, setClaimMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+
+  const handleClaim = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setClaimLoading(true);
+    setClaimMessage(null);
+    try {
+      const res = await api.post('/certificates/claim', claimForm);
+      setClaimMessage({ type: 'success', text: res.data.message });
+      fetchMyDocuments(); // Refresh wallet
+      setTimeout(() => setShowClaimModal(false), 2000);
+    } catch (error: any) {
+      setClaimMessage({ type: 'error', text: error.response?.data?.message || 'Failed to claim document' });
+    } finally {
+      setClaimLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
+
+      {/* Claim Modal */}
+      {showClaimModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Claim Legacy Document</h2>
+            <p className="text-gray-500 text-sm mb-4">Link a historical university record to your wallet using your FAYDA FAN.</p>
+            
+            {claimMessage && (
+              <div className={`p-3 rounded-lg text-sm mb-4 ${claimMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {claimMessage.text}
+              </div>
+            )}
+
+            <form onSubmit={handleClaim} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">FAYDA FAN (12+ digits)</label>
+                <input required type="text" placeholder="e.g. 123456789012" value={claimForm.faydaId} onChange={e => setClaimForm({...claimForm, faydaId: e.target.value})} className="w-full border rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">University Code</label>
+                <select required value={claimForm.institutionCode} onChange={e => setClaimForm({...claimForm, institutionCode: e.target.value})} className="w-full border rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+                  <option value="HU">Hawassa University (HU)</option>
+                  <option value="AAU">Addis Ababa University (AAU)</option>
+                  <option value="JU">Jimma University (JU)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Old Student ID</label>
+                <input required type="text" placeholder="e.g. UGR/1234/98" value={claimForm.studentId} onChange={e => setClaimForm({...claimForm, studentId: e.target.value})} className="w-full border rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Graduation Year</label>
+                <input required type="text" placeholder="e.g. 2005" value={claimForm.graduationYear} onChange={e => setClaimForm({...claimForm, graduationYear: e.target.value})} className="w-full border rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowClaimModal(false)} className="flex-1 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 text-sm font-bold">Cancel</button>
+                <button type="submit" disabled={claimLoading} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-bold flex justify-center items-center">
+                  {claimLoading ? 'Verifying...' : 'Claim Document'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Header — Blue consistent theme */}
       <div className="bg-blue-700 text-white px-6 py-8 relative overflow-hidden">
