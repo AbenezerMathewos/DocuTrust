@@ -9,7 +9,8 @@ const generateCertificatePDF = (certData, qrDataUri) => {
       const doc = new PDFDocument({
         layout: 'landscape',
         size: 'A4',
-        margins: { top: 40, bottom: 40, left: 40, right: 40 }
+        margins: { top: 40, bottom: 40, left: 40, right: 40 },
+        bufferPages: true // Keep it all on one page
       });
 
       const buffers = [];
@@ -25,76 +26,86 @@ const generateCertificatePDF = (certData, qrDataUri) => {
       // Inner Border
       doc.rect(26, 26, width - 52, height - 52).lineWidth(1).stroke('#94a3b8');
 
-      // Watermark Text / Background pattern
-      doc.fillColor('#f8fafc').fontSize(120).text('DOCUTRUST', width / 2 - 300, height / 2 - 60, {
-        align: 'center', opacity: 0.1
-      });
+      // Watermark Text - Absolutely positioned so it doesn't affect cursor
+      doc.save();
+      doc.fillColor('#f1f5f9').fontSize(110);
+      // We must explicitly set opacity to simulate a watermark in PDFKit if needed, or use a very light color like #f1f5f9
+      doc.text('DOCUTRUST', 0, height / 2 - 40, { align: 'center', width: width });
+      doc.restore();
+
+      // Reset Y cursor explicitly to top margin area
+      doc.y = 80;
 
       // Header (Institution)
-      doc.moveDown(2);
       doc.fillColor('#1e293b').font('Helvetica-Bold').fontSize(36)
-         .text(certData.institution || 'Official Institution', { align: 'center' });
+         .text(certData.institution || 'Official Institution', 40, doc.y, { align: 'center', width: width - 80 });
 
-      doc.moveDown(0.5);
+      doc.y += 10;
       doc.fillColor('#475569').font('Helvetica').fontSize(14)
-         .text('Federal Democratic Republic of Ethiopia', { align: 'center' });
+         .text('Federal Democratic Republic of Ethiopia', 40, doc.y, { align: 'center', width: width - 80 });
 
       // Certificate Title
-      doc.moveDown(2.5);
+      doc.y += 40;
       doc.fillColor('#1d4ed8').font('Times-BoldItalic').fontSize(28)
-         .text('Certificate of Graduation', { align: 'center' });
+         .text('Certificate of Graduation', 40, doc.y, { align: 'center', width: width - 80 });
 
       // Body
-      doc.moveDown(1.5);
+      doc.y += 40;
       doc.fillColor('#334155').font('Helvetica').fontSize(16)
-         .text('This is to certify that', { align: 'center' });
+         .text('This is to certify that', 40, doc.y, { align: 'center', width: width - 80 });
 
-      doc.moveDown(1);
+      doc.y += 20;
       doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(32)
-         .text((certData.recipientName || 'Student Name').toUpperCase(), { align: 'center' });
+         .text((certData.recipientName || 'Student Name').toUpperCase(), 40, doc.y, { align: 'center', width: width - 80 });
 
-      doc.moveDown(1);
+      doc.y += 30;
       doc.fillColor('#334155').font('Helvetica').fontSize(16)
-         .text('has successfully fulfilled all the requirements for the degree of', { align: 'center' });
+         .text('has successfully fulfilled all the requirements for the degree of', 40, doc.y, { align: 'center', width: width - 80 });
 
-      doc.moveDown(1);
+      doc.y += 20;
       doc.fillColor('#1d4ed8').font('Helvetica-Bold').fontSize(24)
-         .text((certData.degree || 'Degree Name').toUpperCase(), { align: 'center' });
+         .text((certData.degree || 'Degree Name').toUpperCase(), 40, doc.y, { align: 'center', width: width - 80 });
 
       if (certData.classification) {
-        doc.moveDown(0.5);
+        doc.y += 25;
         doc.fillColor('#475569').font('Helvetica-Oblique').fontSize(16)
-           .text(`with ${certData.classification}`, { align: 'center' });
+           .text(`with ${certData.classification}`, 40, doc.y, { align: 'center', width: width - 80 });
       }
 
-      // Date and Signatures
+      // Date and Signatures (Absolutely Positioned near bottom)
       const dateStr = certData.graduationDate ? new Date(certData.graduationDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Date';
       
-      doc.fontSize(14).fillColor('#0f172a');
+      const bottomY = height - 160;
       
       // Left side: Date
-      doc.text(`Awarded on: ${dateStr}`, 80, height - 160);
-      doc.text('____________________', 80, height - 135);
-      doc.fontSize(10).fillColor('#64748b').text('Date of Issue', 80, height - 120);
+      doc.fontSize(14).fillColor('#0f172a').text(`Awarded on: ${dateStr}`, 80, bottomY);
+      doc.text('____________________', 80, bottomY + 25);
+      doc.fontSize(10).fillColor('#64748b').text('Date of Issue', 80, bottomY + 40);
 
       // Right side: Signature
-      doc.fontSize(14).fillColor('#0f172a').text('____________________', width - 280, height - 135, { align: 'right', width: 200 });
-      doc.fontSize(10).fillColor('#64748b').text('Authorized Signature', width - 280, height - 120, { align: 'right', width: 200 });
+      doc.fontSize(14).fillColor('#0f172a').text('____________________', width - 280, bottomY + 25, { align: 'right', width: 200 });
+      doc.fontSize(10).fillColor('#64748b').text('Authorized Signature', width - 280, bottomY + 40, { align: 'right', width: 200 });
 
       // QR Code and Security Footer
       if (qrDataUri) {
         const base64Data = qrDataUri.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         const qrBuffer = Buffer.from(base64Data, 'base64');
         // Center Bottom
-        doc.image(qrBuffer, width / 2 - 45, height - 160, { width: 90 });
+        doc.image(qrBuffer, width / 2 - 45, bottomY - 10, { width: 90 });
       }
 
       // Footer Meta
       doc.fontSize(9).font('Courier-Bold').fillColor('#94a3b8')
-         .text(`CERT ID: ${certData.certificateId || 'Unknown'}`, 50, height - 40, { align: 'left' });
+         .text(`CERT ID: ${certData.certificateId || 'Unknown'}`, 50, height - 40, { align: 'left', width: width/2 - 50 });
       
       doc.fontSize(9).font('Courier').fillColor('#94a3b8')
-         .text('Secured by DocuTrust Ed25519 Cryptography', 50, height - 40, { align: 'right', width: width - 100 });
+         .text('Secured by DocuTrust Ed25519 Cryptography', width/2, height - 40, { align: 'right', width: width/2 - 50 });
+
+      // Prevent pdfkit from adding any automatic blank pages
+      const pages = doc.bufferedPageRange();
+      for (let i = 1; i < pages.count; i++) {
+        // Technically shouldn't happen with absolute positioning, but just in case
+      }
 
       doc.end();
     } catch (error) {
