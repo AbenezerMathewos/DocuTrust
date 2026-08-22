@@ -10,7 +10,7 @@ const {
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.route('/')
-  .get(protect, authorize('root_admin', 'issuer'), getInstitutions)
+  .get(protect, authorize('root_admin', 'issuer', 'holder'), getInstitutions)
   .post(protect, authorize('root_admin'), createInstitution);
 
 router.route('/:id')
