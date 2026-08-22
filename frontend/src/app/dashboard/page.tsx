@@ -86,21 +86,11 @@ export default function DashboardPage() {
     setMessage(null);
 
     try {
-      const response = await api.post("/certificates/issue", singleForm, {
-        responseType: "blob"
-      });
+      const response = await api.post("/certificates/issue", singleForm);
 
-      // Trigger file download in browser
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Certificate_${singleForm.recipientName.replace(/\s+/g, '_')}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode?.removeChild(link);
-
-      setMessage({ type: "success", text: "Certificate issued and downloaded successfully!" });
+      setMessage({ type: "success", text: "Certificate securely issued! You can view it in the History tab." });
       setSingleForm({ ...singleForm, recipientName: "", recipientEmail: "", studentId: "", degree: "", department: "", classification: "", graduationDate: "", expiresAt: "" });
+      fetchCertificates(); // Refresh history
     } catch (error: any) {
       setMessage({ type: "error", text: error.response?.data?.message || "Failed to issue certificate." });
     } finally {
@@ -121,21 +111,12 @@ export default function DashboardPage() {
 
     try {
       const response = await api.post("/certificates/batch-issue", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        responseType: "blob"
+        headers: { "Content-Type": "multipart/form-data" }
       });
 
-      // Trigger ZIP download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Batch_Certificates_HU.zip`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode?.removeChild(link);
-
-      setMessage({ type: "success", text: "Batch processing complete! ZIP downloaded." });
+      setMessage({ type: "success", text: response.data.message || "Batch processing complete! Certificates are available in the History tab." });
       setCsvFile(null);
+      fetchCertificates(); // Refresh history
     } catch (error: any) {
       setMessage({ type: "error", text: "Failed to process batch CSV." });
     } finally {
