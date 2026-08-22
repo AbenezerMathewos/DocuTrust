@@ -38,38 +38,38 @@ const generateCertificatePDF = (certData, qrDataUri) => {
 
       // Header (Institution)
       doc.fillColor('#1e293b').font('Helvetica-Bold').fontSize(36)
-         .text(certData.institution || 'Official Institution', 40, doc.y, { align: 'center', width: width - 80 });
+         .text(certData.institution || 'Official Institution', 40, doc.y, { align: 'center' });
 
       doc.y += 10;
       doc.fillColor('#475569').font('Helvetica').fontSize(14)
-         .text('Federal Democratic Republic of Ethiopia', 40, doc.y, { align: 'center', width: width - 80 });
+         .text('Federal Democratic Republic of Ethiopia', 40, doc.y, { align: 'center' });
 
       // Certificate Title
       doc.y += 40;
       doc.fillColor('#1d4ed8').font('Times-BoldItalic').fontSize(28)
-         .text('Certificate of Graduation', 40, doc.y, { align: 'center', width: width - 80 });
+         .text('Certificate of Graduation', 40, doc.y, { align: 'center' });
 
       // Body
       doc.y += 40;
       doc.fillColor('#334155').font('Helvetica').fontSize(16)
-         .text('This is to certify that', 40, doc.y, { align: 'center', width: width - 80 });
+         .text('This is to certify that', 40, doc.y, { align: 'center' });
 
       doc.y += 20;
       doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(32)
-         .text((certData.recipientName || 'Student Name').toUpperCase(), 40, doc.y, { align: 'center', width: width - 80 });
+         .text((certData.recipientName || 'Student Name').toUpperCase(), 40, doc.y, { align: 'center' });
 
       doc.y += 30;
       doc.fillColor('#334155').font('Helvetica').fontSize(16)
-         .text('has successfully fulfilled all the requirements for the degree of', 40, doc.y, { align: 'center', width: width - 80 });
+         .text('has successfully fulfilled all the requirements for the degree of', 40, doc.y, { align: 'center' });
 
       doc.y += 20;
       doc.fillColor('#1d4ed8').font('Helvetica-Bold').fontSize(24)
-         .text((certData.degree || 'Degree Name').toUpperCase(), 40, doc.y, { align: 'center', width: width - 80 });
+         .text((certData.degree || 'Degree Name').toUpperCase(), 40, doc.y, { align: 'center' });
 
       if (certData.classification) {
         doc.y += 25;
         doc.fillColor('#475569').font('Helvetica-Oblique').fontSize(16)
-           .text(`with ${certData.classification}`, 40, doc.y, { align: 'center', width: width - 80 });
+           .text(`with ${certData.classification}`, 40, doc.y, { align: 'center' });
       }
 
       // Date and Signatures (Absolutely Positioned near bottom)
