@@ -71,7 +71,7 @@ export default function Login() {
             {/* Country Watermark Overlay */}
             <div className="absolute top-6 left-6 z-20 flex flex-col pointer-events-none select-none">
               <span className="text-3xl md:text-4xl font-black text-white tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] opacity-90">Ethiopia</span>
-              <span className="text-2xl md:text-3xl font-bold text-blue-400 tracking-wider drop-shadow-[0_0_10px_rgba(59,130,246,0.6)] opacity-90">ኢትዮጲያው</span>
+              <span className="text-2xl md:text-3xl font-bold text-blue-400 tracking-wider drop-shadow-[0_0_10px_rgba(59,130,246,0.6)] opacity-90">ኢትዮጲያ</span>
             </div>
 
             <img 
