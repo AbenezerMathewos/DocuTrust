@@ -287,13 +287,6 @@ const batchIssueCertificates = async (req, res) => {
       return res.status(400).json({ message: 'CSV file is empty or invalid' });
     }
 
-    // 4. Setup Archiver for ZIP response
-    res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', `attachment; filename=batch_certificates_${institution.code}.zip`);
-    
-    const archive = archiver('zip', { zlib: { level: 9 } });
-    archive.pipe(res);
-
     // 5. Process each row
     const generatedCertificates = [];
     for (const row of results) {
@@ -335,21 +328,6 @@ const batchIssueCertificates = async (req, res) => {
         blockNumber: txReceipt.blockNumber
       });
 
-      // Generate PDF
-      const pdfDataForDocument = {
-        certificateId,
-        recipientName,
-        degree,
-        classification,
-        graduationDate,
-        institution: institution.name
-      };
-      
-      const pdfBuffer = await generateCertificatePDF(pdfDataForDocument, qrDataUri);
-      
-      // Add to ZIP
-      archive.append(pdfBuffer, { name: `${certificateId}_${recipientName.replace(/\s+/g, '_')}.pdf` });
-      
       generatedCertificates.push(certificateId);
     }
 
@@ -361,7 +339,11 @@ const batchIssueCertificates = async (req, res) => {
       details: `Issued ${generatedCertificates.length} certificates`
     });
 
-    archive.finalize();
+    res.status(201).json({
+      success: true,
+      message: `Batch processing complete. ${generatedCertificates.length} certificates issued.`,
+      count: generatedCertificates.length
+    });
 
   } catch (error) {
     console.error('Error in batch issuance:', error);
