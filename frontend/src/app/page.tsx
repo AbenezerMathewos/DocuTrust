@@ -17,7 +17,7 @@ export default function Home() {
 
   const content = {
     en: {
-      subtitle: "Digital Ethiopia 2025 — National Trust Infrastructure",
+      subtitle: "Digital Ethiopia 2030 — National Trust Infrastructure",
       title1: "The End of",
       titleHighlight: "Document Fraud",
       title2: "in Ethiopia",
@@ -37,7 +37,7 @@ export default function Home() {
       stat3: "Tamper Detection"
     },
     am: {
-      subtitle: "ዲጂታል ኢትዮጵያ 2025 — አገራዊ የዕምነት መሠረተ ልማት",
+      subtitle: "ዲጂታል ኢትዮጵያ 2030 — አገራዊ የዕምነት መሠረተ ልማት",
       title1: "በኢትዮጵያ",
       titleHighlight: "የሰነድ ማጭበርበር",
       title2: "ማክተሚያ",
