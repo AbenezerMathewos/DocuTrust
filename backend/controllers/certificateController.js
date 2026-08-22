@@ -87,6 +87,7 @@ const issueCertificate = async (req, res) => {
       },
       hash,
       signature,
+      keyVersion, // Save the version used to sign
       qrData: qrDataUri,
       txHash: txReceipt.txHash,
       blockNumber: txReceipt.blockNumber
