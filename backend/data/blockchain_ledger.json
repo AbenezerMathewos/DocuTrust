@@ -5,5 +5,16 @@
     "previousHash": "0",
     "data": "Genesis Block",
     "hash": "89eb0ac031a63d2421cd05a2fbe41f3ea35f5c3712ca839cbf6b85c4ee07b7a3"
+  },
+  {
+    "index": 1,
+    "timestamp": "2026-08-22T03:33:25.757Z",
+    "previousHash": "89eb0ac031a63d2421cd05a2fbe41f3ea35f5c3712ca839cbf6b85c4ee07b7a3",
+    "data": {
+      "certificateId": "CERT-WSU-2010-5464ECBE",
+      "documentHash": "12572c8f2c903d28f67d77ecbf193493a314b52c89f50e626340d992dfed6b5b",
+      "event": "DOCUMENT_ISSUED"
+    },
+    "hash": "dcff40333c60d92162cf2ac06a6001479edb4a8da72a89469a2578d7d2eb42e4"
   }
 ]
