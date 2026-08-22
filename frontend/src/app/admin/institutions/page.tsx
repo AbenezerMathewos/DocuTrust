@@ -54,8 +54,20 @@ export default function InstitutionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-blue-700 text-white px-6 py-8">
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* Animated Dashboard Watermark */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-[0.03] mix-blend-multiply">
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes slow-pan {
+            0%, 100% { transform: scale(1.1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-10px, -15px); }
+          }
+          .animate-bg-pan { animation: slow-pan 12s ease-in-out infinite; }
+        `}} />
+        <img src="/crypto_lock.jpg" alt="" className="w-full h-full object-cover animate-bg-pan grayscale blur-[2px]" aria-hidden="true" />
+      </div>
+
+      <div className="bg-blue-700 text-white px-6 py-8 relative z-10 shadow-lg">
         <div className="max-w-5xl mx-auto">
           <div className="text-xs font-mono text-blue-200/20 mb-2">sha256: institution... trusted... authorized...</div>
           <span className="text-xs font-bold tracking-widest bg-white/20 px-3 py-0.5 rounded-full uppercase">🏛️ Institution Management</span>
