@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
+  const [institutions, setInstitutions] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"single" | "batch" | "history" | "audit">("single");
   const [certificates, setCertificates] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
@@ -16,22 +17,27 @@ export default function DashboardPage() {
   // Form States
   const [singleForm, setSingleForm] = useState({
     recipientName: "",
+    recipientEmail: "",
     studentId: "",
-    institutionCode: "HU", // Defaulting to our dummy for now
+    institutionCode: "",
     degree: "",
     department: "",
     classification: "",
-    graduationDate: ""
+    graduationDate: "",
+    expiresAt: ""
   });
   
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{type: "success" | "error", text: string} | null>(null);
+  
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, pages: 1 });
 
-  // Note: We disabled redirecting for the demo so you don't have to log in if you don't want to.
-  // In production, uncomment the auth redirect:
   useEffect(() => { 
     if (!isAuthenticated) router.push('/login'); 
+    fetchInstitutions();
   }, [isAuthenticated, router]);
 
   useEffect(() => {
@@ -40,12 +46,25 @@ export default function DashboardPage() {
     } else if (activeTab === "audit") {
       fetchAuditLogs();
     }
-  }, [activeTab]);
+  }, [activeTab, page, search, singleForm.institutionCode]);
+
+  const fetchInstitutions = async () => {
+    try {
+      const res = await api.get("/institutions");
+      setInstitutions(res.data);
+      if (res.data.length > 0) {
+        setSingleForm(prev => ({ ...prev, institutionCode: res.data[0].code }));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchCertificates = async () => {
     try {
-      const res = await api.get("/certificates?institutionCode=HU");
+      const res = await api.get(`/certificates?institutionCode=${singleForm.institutionCode}&search=${search}&page=${page}&limit=10`);
       setCertificates(res.data.data || []);
+      setPagination(res.data.pagination || { total: 0, pages: 1 });
     } catch (err) {
       console.error(err);
     }
@@ -80,7 +99,7 @@ export default function DashboardPage() {
       link.parentNode?.removeChild(link);
 
       setMessage({ type: "success", text: "Certificate issued and downloaded successfully!" });
-      setSingleForm({ ...singleForm, recipientName: "", studentId: "", degree: "", department: "", classification: "", graduationDate: "" });
+      setSingleForm({ ...singleForm, recipientName: "", recipientEmail: "", studentId: "", degree: "", department: "", classification: "", graduationDate: "", expiresAt: "" });
     } catch (error: any) {
       setMessage({ type: "error", text: error.response?.data?.message || "Failed to issue certificate." });
     } finally {
@@ -96,7 +115,7 @@ export default function DashboardPage() {
     setMessage(null);
 
     const formData = new FormData();
-    formData.append("institutionCode", "HU");
+    formData.append("institutionCode", singleForm.institutionCode);
     formData.append("file", csvFile);
 
     try {
