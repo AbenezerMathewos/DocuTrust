@@ -82,5 +82,27 @@
       "event": "DOCUMENT_ISSUED"
     },
     "hash": "8f0dd303d6d1f3f230742998f31af8e1ba1d6394dc892fda2c2947463cf48452"
+  },
+  {
+    "index": 8,
+    "timestamp": "2026-08-22T04:58:46.611Z",
+    "previousHash": "8f0dd303d6d1f3f230742998f31af8e1ba1d6394dc892fda2c2947463cf48452",
+    "data": {
+      "certificateId": "CERT-HU-2026-84035D24",
+      "documentHash": "d162798f4969fdecc114ee77b427a14667613290c639bc4a587da6fb5eb5ac2e",
+      "event": "DOCUMENT_ISSUED"
+    },
+    "hash": "5ac5ce5f4aa334bdc15b2deccb5d85119c87d420cb4f5252b077ac643e537510"
+  },
+  {
+    "index": 9,
+    "timestamp": "2026-08-22T04:58:46.658Z",
+    "previousHash": "5ac5ce5f4aa334bdc15b2deccb5d85119c87d420cb4f5252b077ac643e537510",
+    "data": {
+      "certificateId": "CERT-HU-2026-6F7037A5",
+      "documentHash": "5674463ffeaa044194c62bf9f9ac14f30874d7d344140cf63056f1f9e80f69f4",
+      "event": "DOCUMENT_ISSUED"
+    },
+    "hash": "778ab09610ec4202f17128d3c3ebf135cb174c9fc36f448b45965c9251cddc6d"
   }
 ]
