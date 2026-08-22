@@ -183,13 +183,13 @@ export default function DashboardPage() {
       </div>
 
       {message && (
-        <div className={`p-4 rounded mb-6 text-sm font-medium ${message.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+        <div className={`relative z-10 p-4 rounded mb-6 text-sm font-medium ${message.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
           {message.text}
         </div>
       )}
 
       {/* Tabs */}
-      <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+      <div className="relative z-10 flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg shadow-sm">
         <button
           onClick={() => setActiveTab("single")}
           className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === "single" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
@@ -218,7 +218,7 @@ export default function DashboardPage() {
 
       {/* Single Issuance Tab */}
       {activeTab === "single" && (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="relative z-10 bg-white/90 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-semibold mb-6">Issue Single Certificate</h2>
           <form onSubmit={handleSingleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
