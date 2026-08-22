@@ -49,5 +49,16 @@
       "event": "DOCUMENT_ISSUED"
     },
     "hash": "207fbf67ad8a1578af219155d4bf9bb10fab18a98d86fd8d5bd00ebb161dd997"
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-08-22T04:54:56.225Z",
+    "previousHash": "207fbf67ad8a1578af219155d4bf9bb10fab18a98d86fd8d5bd00ebb161dd997",
+    "data": {
+      "certificateId": "CERT-HAU-2024-B08F00B9",
+      "documentHash": "d53e04d42690b9636f14fffa0f4490a865d1d6f43391de8c4c4edf9abfb8b94b",
+      "event": "DOCUMENT_ISSUED"
+    },
+    "hash": "39ce897b863d9c2c3a198cba8d6253e1986a57c57f89b7926e037428eb53ec5e"
   }
 ]
