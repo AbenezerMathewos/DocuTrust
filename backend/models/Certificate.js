@@ -9,6 +9,7 @@ const certificateSchema = new mongoose.Schema({
   recipient: {
     name: { type: String, required: true },
     studentId: { type: String }, // Optional, based on typical structures
+    email: { type: String } // Needed for automated email notifications
   },
   issuer: {
     type: mongoose.Schema.Types.ObjectId,
@@ -20,6 +21,7 @@ const certificateSchema = new mongoose.Schema({
     department: { type: String },
     classification: { type: String, required: true },
     graduationDate: { type: Date, required: true },
+    expiresAt: { type: Date } // Expiry date if applicable
   },
   hash: {
     type: String,
