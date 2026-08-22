@@ -364,6 +364,12 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
                       <button 
+                        onClick={() => setSelectedCertDetails(cert)}
+                        className="text-purple-600 hover:text-purple-900 font-medium bg-purple-50 hover:bg-purple-100 px-3 py-1 rounded transition-colors"
+                      >
+                        Details
+                      </button>
+                      <button 
                         onClick={() => handleView(cert.certificateId)}
                         className="text-gray-600 hover:text-gray-900 font-medium bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors"
                       >
