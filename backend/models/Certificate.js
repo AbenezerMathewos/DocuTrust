@@ -31,6 +31,10 @@ const certificateSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  keyVersion: {
+    type: Number,
+    default: 1,
+  },
   qrData: {
     type: String, // Verification URL
     required: true,
