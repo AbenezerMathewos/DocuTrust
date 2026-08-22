@@ -10,10 +10,28 @@ export default function StudentDashboard() {
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [institutions, setInstitutions] = useState<any[]>([]);
+
   useEffect(() => {
-    if (!isAuthenticated) { router.push('/login'); return; }
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
     fetchMyDocuments();
+    fetchInstitutions();
   }, [isAuthenticated]);
+
+  const fetchInstitutions = async () => {
+    try {
+      const res = await api.get('/institutions');
+      setInstitutions(res.data.filter((i: any) => i.isActive));
+      if (res.data.length > 0) {
+        setClaimForm(prev => ({ ...prev, institutionCode: res.data[0].code }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch institutions', error);
+    }
+  };
 
   const fetchMyDocuments = async () => {
     try {
