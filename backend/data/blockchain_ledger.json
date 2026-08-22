@@ -16,5 +16,16 @@
       "event": "DOCUMENT_ISSUED"
     },
     "hash": "dcff40333c60d92162cf2ac06a6001479edb4a8da72a89469a2578d7d2eb42e4"
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-08-22T03:48:13.738Z",
+    "previousHash": "dcff40333c60d92162cf2ac06a6001479edb4a8da72a89469a2578d7d2eb42e4",
+    "data": {
+      "certificateId": "CERT-WSU-2020-5D375D75",
+      "documentHash": "b15e78cbaf5ae6233e19329f638709ddf246bd7d06662b216264023a19587dc2",
+      "event": "DOCUMENT_ISSUED"
+    },
+    "hash": "d6b4e74c867136af808b6ef77a4bd78b58d8ece1b5ad06f1ae91ca7267f82f27"
   }
 ]
