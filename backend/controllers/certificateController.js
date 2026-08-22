@@ -130,6 +130,18 @@ const issueCertificate = async (req, res) => {
       ).catch(err => console.error('Email error:', err));
     }
 
+    // 10.5 Send SMS Notification to Holder (non-blocking)
+    if (recipientPhone) {
+      const { sendCertificateSMS } = require('../utils/smsUtils');
+      sendCertificateSMS(
+        recipientPhone,
+        recipientName,
+        degree,
+        institution.name,
+        certificateId
+      ).catch(err => console.error('SMS error:', err));
+    }
+
     // 11. Return PDF to client
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=${certificateId}.pdf`);
