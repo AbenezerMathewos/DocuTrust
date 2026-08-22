@@ -57,7 +57,7 @@ const sendCertificateNotification = async (toEmail, recipientName, degree, insti
         </p>
 
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
-        <p style="color: #cbd5e1; font-size: 11px; text-align: center;">DocuTrust — Securing Ethiopia's Digital Future | Digital Ethiopia 2025</p>
+        <p style="color: #cbd5e1; font-size: 11px; text-align: center;">DocuTrust — Securing Ethiopia's Digital Future | Digital Ethiopia 2030</p>
       </div>
     `,
   };
