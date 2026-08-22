@@ -209,12 +209,24 @@ export default function DashboardPage() {
           <h2 className="text-xl font-semibold mb-6">Issue Single Certificate</h2>
           <form onSubmit={handleSingleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Institution</label>
+              <select required value={singleForm.institutionCode} onChange={(e) => setSingleForm({...singleForm, institutionCode: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                {institutions.map(inst => (
+                  <option key={inst.code} value={inst.code}>{inst.name} ({inst.code})</option>
+                ))}
+              </select>
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
               <input required type="text" value={singleForm.recipientName} onChange={(e) => setSingleForm({...singleForm, recipientName: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. John Doe" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
-              <input required type="text" value={singleForm.studentId} onChange={(e) => setSingleForm({...singleForm, studentId: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. ID-12345" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Student Email (Optional)</label>
+              <input type="email" value={singleForm.recipientEmail} onChange={(e) => setSingleForm({...singleForm, recipientEmail: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. student@email.com" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Student ID (Optional)</label>
+              <input type="text" value={singleForm.studentId} onChange={(e) => setSingleForm({...singleForm, studentId: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. ID-12345" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Degree Title</label>
@@ -231,6 +243,10 @@ export default function DashboardPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Graduation Date</label>
               <input required type="date" value={singleForm.graduationDate} onChange={(e) => setSingleForm({...singleForm, graduationDate: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date (Optional)</label>
+              <input type="date" value={singleForm.expiresAt} onChange={(e) => setSingleForm({...singleForm, expiresAt: e.target.value})} className="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             
             <div className="md:col-span-2 pt-4 border-t">
