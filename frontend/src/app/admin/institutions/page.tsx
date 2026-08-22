@@ -143,10 +143,27 @@ export default function InstitutionsPage() {
                         {inst.isActive ? '✅ Active' : '🚫 Inactive'}
                       </span>
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 flex gap-2">
                       <button onClick={() => handleToggle(inst._id, inst.isActive, inst.name)}
                         className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${inst.isActive ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}>
                         {inst.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          const reason = window.prompt("Reason for key rotation (e.g. Compromise, Routine):");
+                          if (reason === null) return;
+                          try {
+                            await api.post(`/institutions/${inst._id}/rotate-keys`, { reason });
+                            setMessage({ type: 'success', text: `Keys successfully rotated for ${inst.name}.` });
+                            fetchInstitutions();
+                          } catch (err: any) {
+                            setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to rotate keys' });
+                          }
+                        }}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors bg-purple-50 text-purple-700 hover:bg-purple-100"
+                        title="Generate a new keypair and revoke the current one"
+                      >
+                        Rotate Keys (v{inst.currentKeyVersion || 1})
                       </button>
                     </td>
                   </tr>
