@@ -286,8 +286,27 @@ export default function DashboardPage() {
 
       {/* History Tab */}
       {activeTab === "history" && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
+          <div className="flex flex-col md:flex-row justify-between mb-4 gap-4">
+            <h2 className="text-xl font-semibold">Certificate History</h2>
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="Search by student name..." 
+                className="border rounded p-2 text-sm w-full md:w-64"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button 
+                onClick={() => setPage(1)} // Search triggers re-fetch implicitly via useEffect, but clicking this is explicit
+                className="bg-gray-100 px-4 py-2 rounded text-sm hover:bg-gray-200"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+          
+          <table className="min-w-full divide-y divide-gray-200 mb-4">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Certificate ID</th>
