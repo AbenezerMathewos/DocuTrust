@@ -12,15 +12,16 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Fix for all form inputs to guarantee readability */
+input, select, textarea {
+  color: #111827 !important; /* text-gray-900 */
+}
+input::placeholder, select::placeholder, textarea::placeholder {
+  color: #9ca3af !important; /* text-gray-400 */
 }
