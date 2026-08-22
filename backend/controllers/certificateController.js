@@ -480,7 +480,12 @@ const getMyDocuments = async (req, res) => {
     
     // Find certs matching either the student ID or email as a fallback if you implement email in certs
     // Here we rely on studentId
-    const filter = { 'recipient.studentId': req.user.studentId };
+    const filter = { 
+      $or: [ 
+        ...(req.user.studentId ? [{ 'recipient.studentId': req.user.studentId }] : []), 
+        ...(req.user.email ? [{ 'recipient.email': req.user.email }] : [])
+      ] 
+    };
     
     const certificates = await Certificate.find(filter)
       .populate('issuer', 'name code')
