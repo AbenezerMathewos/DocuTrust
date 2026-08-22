@@ -105,10 +105,15 @@ const issueCertificate = async (req, res) => {
     const pdfBuffer = await generateCertificatePDF(pdfDataForDocument, qrDataUri);
 
     // 10. Send Email Notification to Holder (non-blocking)
-    const holderUser = await User.findOne({ studentId: studentId });
-    if (holderUser && holderUser.email) {
+    let emailToSend = recipientEmail;
+    if (!emailToSend && studentId) {
+      const holderUser = await User.findOne({ studentId: studentId });
+      if (holderUser) emailToSend = holderUser.email;
+    }
+
+    if (emailToSend) {
       sendCertificateNotification(
-        holderUser.email,
+        emailToSend,
         recipientName,
         degree,
         institution.name,
