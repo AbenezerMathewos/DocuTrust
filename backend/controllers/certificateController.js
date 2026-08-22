@@ -425,11 +425,71 @@ const getMyDocuments = async (req, res) => {
   }
 };
 
+// @desc    Download a certificate PDF by ID
+// @route   GET /api/certificates/download/:certificateId
+// @access  Private (holder or issuer)
+const downloadCertificate = async (req, res) => {
+  try {
+    const { certificateId } = req.params;
+    const cert = await Certificate.findOne({ certificateId }).populate('issuer', 'name code');
+    if (!cert) return res.status(404).json({ message: 'Certificate not found' });
+
+    const pdfData = {
+      certificateId: cert.certificateId,
+      recipientName: cert.recipient.name,
+      degree: cert.credential.degree,
+      classification: cert.credential.classification,
+      graduationDate: cert.credential.graduationDate,
+      institution: cert.issuer.name
+    };
+
+    const pdfBuffer = await generateCertificatePDF(pdfData, cert.qrData);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${certificateId}.pdf`);
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Download error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get current user's profile
+// @route   GET /api/auth/me
+// @access  Private
+const getMyProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update current user's profile
+// @route   PUT /api/auth/me
+// @access  Private
+const updateMyProfile = async (req, res) => {
+  try {
+    const { name, studentId } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (name) user.name = name;
+    if (studentId) user.studentId = studentId;
+    await user.save();
+    res.status(200).json({ success: true, data: { name: user.name, email: user.email, role: user.role, studentId: user.studentId } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   issueCertificate,
   verifyCertificate,
   batchIssueCertificates,
   getAllCertificates,
   revokeCertificate,
-  getMyDocuments
+  getMyDocuments,
+  downloadCertificate,
+  getMyProfile,
+  updateMyProfile
 };
