@@ -159,13 +159,17 @@ const verifyCertificate = async (req, res) => {
     // Important: format date exactly as it was provided during issuance (YYYY-MM-DD)
     const formattedDate = cert.credential.graduationDate.toISOString().substring(0, 10);
     
-    const certPayload = {
+    let certPayload = {
       certificateId: cert.certificateId,
       recipientName: cert.recipient.name,
       degree: cert.credential.degree,
       institution: cert.issuer.name,
       graduationDate: formattedDate
     };
+    
+    if (cert.credential.expiresAt) {
+      certPayload.expiresAt = cert.credential.expiresAt.toISOString().substring(0, 10);
+    }
 
     // 3. Verify the mathematical signature
     const canonicalStr = canonicalizeCertificate(certPayload);
