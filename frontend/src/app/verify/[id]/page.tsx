@@ -23,6 +23,7 @@ export default function VerifyPage() {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [error, setError] = useState("");
+  const [lang, setLang] = useState<"en" | "am">("en");
 
   useEffect(() => {
     if (!certificateId) return;
