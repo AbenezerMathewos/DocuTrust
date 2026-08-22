@@ -64,6 +64,17 @@ export default function StudentDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
+      {/* Animated Dashboard Watermark */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-[0.03] mix-blend-multiply">
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes slow-pan {
+            0%, 100% { transform: scale(1.1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-10px, -15px); }
+          }
+          .animate-bg-pan { animation: slow-pan 12s ease-in-out infinite; }
+        `}} />
+        <img src="/crypto_lock.jpg" alt="" className="w-full h-full object-cover animate-bg-pan grayscale blur-[2px]" aria-hidden="true" />
+      </div>
 
       {/* Claim Modal */}
       {showClaimModal && (
@@ -112,7 +123,7 @@ export default function StudentDashboard() {
       )}
 
       {/* Header — Blue consistent theme */}
-      <div className="bg-blue-700 text-white px-6 py-8 relative overflow-hidden">
+      <div className="bg-blue-700 text-white px-6 py-8 relative overflow-hidden z-10 shadow-lg">
         <div className="text-xs font-mono text-blue-200/20 whitespace-nowrap overflow-hidden mb-2 select-none">
           sha256: a3f8b2...c9d6e3 | block#42 | verified | sha256: f0a7b4c8d5e2f9a0b6c3 ...
         </div>
