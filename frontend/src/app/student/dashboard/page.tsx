@@ -143,10 +143,16 @@ export default function StudentDashboard() {
       <div className="max-w-5xl mx-auto px-6 py-8">
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-base font-bold text-gray-800">Your Verified Credentials</h2>
-          <button onClick={() => router.push('/scan')}
-            className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">
-            📷 Scan & Verify
-          </button>
+          <div className="flex gap-3">
+            <button onClick={() => setShowClaimModal(true)}
+              className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors">
+              🔍 Claim Legacy Document
+            </button>
+            <button onClick={() => router.push('/scan')}
+              className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors">
+              📷 Scan & Verify
+            </button>
+          </div>
         </div>
 
         {loading ? (
