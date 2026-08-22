@@ -76,7 +76,7 @@ export default function InstitutionsPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-6 py-8 relative z-10">
         {message && (
           <div className={`text-sm rounded-xl p-4 mb-6 ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
             {message.text}
