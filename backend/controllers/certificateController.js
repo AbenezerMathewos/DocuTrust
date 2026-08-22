@@ -330,28 +330,50 @@ const batchIssueCertificates = async (req, res) => {
 
 // @desc    Get all certificates
 // @route   GET /api/certificates
-// @access  Public (for now - should be protected)
+// @access  Private
 const getAllCertificates = async (req, res) => {
   try {
-    const { institutionCode } = req.query;
+    const { institutionCode, search, page = 1, limit = 10 } = req.query;
     
     let filter = {};
-    if (institutionCode) {
-      const institution = await Institution.findOne({ code: institutionCode.toUpperCase() });
+
+    // If issuer is logged in, restrict to their institution implicitly, otherwise use query
+    let targetInstCode = req.user?.role === 'issuer' && req.user?.institutionCode 
+                           ? req.user.institutionCode : institutionCode;
+                           
+    // To properly map user to institution, normally we'd have req.user.institutionId.
+    // Assuming if they pass institutionCode, we use it (for root_admin)
+    if (targetInstCode) {
+      const institution = await Institution.findOne({ code: targetInstCode.toUpperCase() });
       if (institution) {
         filter.issuer = institution._id;
       } else {
-        return res.status(200).json({ success: true, count: 0, data: [] });
+        return res.status(200).json({ success: true, count: 0, data: [], pagination: {} });
       }
     }
 
+    if (search) {
+      filter['recipient.name'] = { $regex: search, $options: 'i' };
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
     const certificates = await Certificate.find(filter)
       .populate('issuer', 'name code')
-      .sort({ createdAt: -1 }); // Newest first
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Certificate.countDocuments(filter);
 
     res.status(200).json({
       success: true,
       count: certificates.length,
+      pagination: {
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / parseInt(limit))
+      },
       data: certificates
     });
   } catch (error) {
@@ -362,13 +384,13 @@ const getAllCertificates = async (req, res) => {
 
 // @desc    Revoke a certificate
 // @route   PUT /api/certificates/revoke/:certificateId
-// @access  Public (for now - should be protected)
+// @access  Private
 const revokeCertificate = async (req, res) => {
   try {
     const { certificateId } = req.params;
     const { reason } = req.body;
 
-    const certificate = await Certificate.findOne({ certificateId });
+    const certificate = await Certificate.findOne({ certificateId }).populate('issuer');
     if (!certificate) {
       return res.status(404).json({ message: 'Certificate not found' });
     }
@@ -388,7 +410,7 @@ const revokeCertificate = async (req, res) => {
     // Log action
     await AuditLog.create({
       action: 'REVOKE',
-      actor: 'Registrar',
+      actor: req.user ? req.user.name : certificate.issuer.name,
       target: certificateId,
       details: `Reason: ${reason || 'No reason provided'}`
     });
