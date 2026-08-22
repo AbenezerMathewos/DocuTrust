@@ -4,12 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../utils/api';
 import Link from 'next/link';
 
-const DEMO_ACCOUNTS = [
-  { label: '🏛️ INSA Admin', email: 'admin@insa.gov.et', password: 'password123', color: 'bg-red-50 border-red-200 hover:border-red-400', badge: 'bg-red-100 text-red-700' },
-  { label: '🎓 University', email: 'aau@university.edu.et', password: 'password123', color: 'bg-blue-50 border-blue-200 hover:border-blue-400', badge: 'bg-blue-100 text-blue-700' },
-  { label: '👤 Student', email: 'student@gmail.com', password: 'password123', color: 'bg-teal-50 border-teal-200 hover:border-teal-400', badge: 'bg-teal-100 text-teal-700' },
-];
-
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,11 +23,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const quickLogin = (acc: typeof DEMO_ACCOUNTS[0]) => {
-    setEmail(acc.email);
-    setPassword(acc.password);
   };
 
   return (
