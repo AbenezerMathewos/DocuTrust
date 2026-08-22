@@ -179,12 +179,29 @@ const verifyCertificate = async (req, res) => {
       certPayload.expiresAt = cert.credential.expiresAt.toISOString().substring(0, 10);
     }
 
-    // 3. Verify the mathematical signature
+    // 3. Find the public key that was used to sign this
+    const certKeyVersion = cert.keyVersion || 1;
+    let publicKeyToUse = cert.issuer.publicKey;
+    
+    // Look up history if available
+    if (cert.issuer.keyHistory && cert.issuer.keyHistory.length > 0) {
+      const historicalKey = cert.issuer.keyHistory.find(k => k.version === certKeyVersion);
+      if (historicalKey) {
+        if (historicalKey.revokedAt) {
+          return res.status(200).json({ 
+            status: 'REVOKED', 
+            message: `The cryptographic key used to sign this document was compromised and revoked on ${new Date(historicalKey.revokedAt).toLocaleDateString()}. This certificate is no longer trusted.` 
+          });
+        }
+        publicKeyToUse = historicalKey.publicKey;
+      }
+    }
+
+    // 4. Verify the mathematical signature
     const canonicalStr = canonicalizeCertificate(certPayload);
-    // Dynamic import to use verifySignature (ensure it's in cryptoUtils import at top)
     const { verifySignature } = require('../utils/cryptoUtils');
     
-    const isValid = verifySignature(canonicalStr, cert.signature, cert.issuer.publicKey);
+    const isValid = verifySignature(canonicalStr, cert.signature, publicKeyToUse);
 
     if (isValid) {
       return res.status(200).json({ 
