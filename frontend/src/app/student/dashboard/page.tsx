@@ -26,7 +26,6 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleDownload = async (certId: string) => {
   const handleView = async (certId: string) => {
     try {
       const res = await api.get(`/certificates/download/${certId}`, { responseType: 'blob' });
