@@ -9,7 +9,8 @@ const certificateSchema = new mongoose.Schema({
   recipient: {
     name: { type: String, required: true },
     studentId: { type: String }, // Optional, based on typical structures
-    email: { type: String } // Needed for automated email notifications
+    email: { type: String }, // Needed for automated email notifications
+    phone: { type: String } // Needed for SMS notifications
   },
   issuer: {
     type: mongoose.Schema.Types.ObjectId,
