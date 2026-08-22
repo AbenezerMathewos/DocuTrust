@@ -370,7 +370,13 @@ export default function DashboardPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(cert.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
+                      <button 
+                        onClick={() => handleDownload(cert.certificateId)}
+                        className="text-blue-600 hover:text-blue-900 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded transition-colors"
+                      >
+                        PDF
+                      </button>
                       {!cert.revocation?.isRevoked && (
                         <button 
                           onClick={() => handleRevoke(cert.certificateId)}
