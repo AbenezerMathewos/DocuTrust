@@ -61,7 +61,7 @@ export default function Login() {
               animation: scan 4s linear infinite;
             }
           `}} />
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 group h-80">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 group aspect-square md:aspect-[4/5] lg:aspect-square">
             {/* Dynamic Overlay */}
             <div className="absolute inset-0 bg-blue-900/30 mix-blend-overlay animate-pulse z-10 pointer-events-none"></div>
             
