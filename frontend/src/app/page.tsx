@@ -1,8 +1,21 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const [certId, setCertId] = useState("");
+
+  const handleVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (certId.trim()) {
+      router.push(`/verify/${certId.trim()}`);
+    }
+  };
+
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pb-16">
 
       {/* Hash Ticker */}
       <div className="overflow-hidden whitespace-nowrap text-xs font-mono text-blue-300/10 py-2 border-b border-blue-900/30 select-none">
@@ -10,7 +23,7 @@ export default function Home() {
       </div>
 
       {/* Hero */}
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+      <div className="max-w-5xl mx-auto px-6 pt-16 pb-10 text-center">
         <div className="inline-flex items-center gap-2 bg-blue-900/40 border border-blue-700/50 text-blue-300 text-xs font-semibold px-4 py-2 rounded-full mb-8">
           <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
           Digital Ethiopia 2025 — National Trust Infrastructure
@@ -26,7 +39,8 @@ export default function Home() {
           DocuTrust uses <strong className="text-slate-300">SHA-256 cryptography</strong> and <strong className="text-slate-300">blockchain anchoring</strong> to issue tamper-proof certificates. Verify any document in exactly <strong className="text-blue-400">one second</strong>.
         </p>
 
-        <div className="flex gap-4 justify-center flex-wrap">
+        {/* Action Buttons */}
+        <div className="flex gap-4 justify-center flex-wrap mb-12">
           <Link href="/login" className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl transition-colors text-sm">
             Sign In to Dashboard →
           </Link>
@@ -35,8 +49,25 @@ export default function Home() {
           </Link>
         </div>
 
+        {/* Verification Bar */}
+        <div className="max-w-xl mx-auto bg-white/5 border border-white/10 p-2 rounded-2xl backdrop-blur-sm mb-20 shadow-2xl">
+          <form onSubmit={handleVerify} className="flex flex-col sm:flex-row gap-2">
+            <input 
+              type="text" 
+              placeholder="Enter Certificate ID (e.g. CERT-HU-2026-...)" 
+              value={certId}
+              onChange={(e) => setCertId(e.target.value)}
+              className="flex-1 bg-white/10 border-none rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none"
+              required
+            />
+            <button type="submit" className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-colors whitespace-nowrap">
+              Verify Now
+            </button>
+          </form>
+        </div>
+
         {/* 3-Step Visual */}
-        <div className="grid md:grid-cols-3 gap-6 mt-20 text-left">
+        <div className="grid md:grid-cols-3 gap-6 text-left">
           {[
             {
               step: '01',
