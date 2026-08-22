@@ -42,40 +42,42 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-emerald-50">
-      {/* Hero Header */}
-      <div className="bg-gradient-to-r from-teal-700 to-emerald-700 text-white px-8 py-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl">👤</span>
-            <span className="text-sm font-semibold bg-white/20 px-3 py-0.5 rounded-full">Citizen / Holder</span>
-          </div>
-          <h1 className="text-4xl font-bold mt-2">My Digital Wallet</h1>
-          <p className="text-teal-100 mt-1 text-lg">Welcome back, <strong>{user?.name || 'Student'}</strong> — your secure credential vault</p>
+    <div className="min-h-screen bg-gray-50">
 
-          <div className="flex gap-6 mt-6 text-sm">
-            <div className="bg-white/10 rounded-xl px-4 py-3 text-center">
-              <div className="text-2xl font-bold">{documents.length}</div>
-              <div className="text-teal-200 text-xs mt-1">Credentials Issued</div>
+      {/* Header — Blue consistent theme */}
+      <div className="bg-blue-700 text-white px-6 py-8 relative overflow-hidden">
+        <div className="text-xs font-mono text-blue-200/20 whitespace-nowrap overflow-hidden mb-2 select-none">
+          sha256: a3f8b2...c9d6e3 | block#42 | verified | sha256: f0a7b4c8d5e2f9a0b6c3 ...
+        </div>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-bold tracking-widest bg-white/20 px-3 py-0.5 rounded-full uppercase">👤 Citizen Wallet</span>
+          </div>
+          <h1 className="text-2xl font-bold mt-1">My Digital Credentials</h1>
+          <p className="text-blue-200 text-sm mt-0.5">Welcome back, <strong>{user?.name || 'Student'}</strong> — your tamper-proof documents</p>
+          <div className="flex gap-4 mt-4 text-sm">
+            <div className="bg-white/10 rounded-lg px-4 py-2 text-center">
+              <div className="text-xl font-bold">{documents.length}</div>
+              <div className="text-blue-200 text-xs">Credentials</div>
             </div>
-            <div className="bg-white/10 rounded-xl px-4 py-3 text-center">
-              <div className="text-2xl font-bold">⛓️</div>
-              <div className="text-teal-200 text-xs mt-1">Blockchain Anchored</div>
+            <div className="bg-white/10 rounded-lg px-4 py-2 text-center">
+              <div className="text-xl font-bold">⛓️</div>
+              <div className="text-blue-200 text-xs">Blockchain Anchored</div>
             </div>
-            <div className="bg-white/10 rounded-xl px-4 py-3 text-center">
-              <div className="text-2xl font-bold">🔐</div>
-              <div className="text-teal-200 text-xs mt-1">Tamper-Proof</div>
+            <div className="bg-white/10 rounded-lg px-4 py-2 text-center">
+              <div className="text-xl font-bold">🔐</div>
+              <div className="text-blue-200 text-xs">SHA-256 Secured</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-8 py-10">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Your Verified Credentials</h2>
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-base font-bold text-gray-800">Your Verified Credentials</h2>
           <button onClick={() => router.push('/scan')}
-            className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-teal-700">
+            className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">
             📷 Scan & Verify
           </button>
         </div>
