@@ -112,8 +112,32 @@ export default function VerifyPage() {
     );
   }
 
+  const t = {
+    en: {
+      auth: "AUTHENTIC",
+      student: "Student Name",
+      degree: "Degree",
+      institution: "Institution",
+      date: "Graduation Date",
+      secured: "Cryptographically secured by Ed25519"
+    },
+    am: {
+      auth: "ትክክለኛ",
+      student: "የተማሪ ስም",
+      degree: "ዲግሪ / የትምህርት ደረጃ",
+      institution: "ተቋም",
+      date: "የተመረቀበት ቀን",
+      secured: "በEd25519 ክሪፕቶግራፊ የተረጋገጠ"
+    }
+  }[lang];
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] p-4">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] p-4 relative">
+      <div className="absolute top-4 right-6 flex bg-gray-100 rounded-lg p-1 border border-gray-200">
+        <button onClick={() => setLang('en')} className={`px-3 py-1 text-xs font-bold rounded ${lang === 'en' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>EN</button>
+        <button onClick={() => setLang('am')} className={`px-3 py-1 text-xs font-bold rounded ${lang === 'am' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>አማ</button>
+      </div>
+
       <div className="bg-white p-8 rounded-2xl max-w-lg w-full border-t-8 border-t-green-500 shadow-2xl">
         <div className="flex flex-col items-center text-center mb-8">
           <div className="bg-green-100 p-3 rounded-full mb-4">
@@ -121,29 +145,29 @@ export default function VerifyPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-3xl font-black text-green-700 tracking-tight mb-1">AUTHENTIC</h2>
+          <h2 className="text-3xl font-black text-green-700 tracking-tight mb-1">{t.auth}</h2>
           <p className="text-green-600 font-medium">{result.message}</p>
         </div>
 
         <div className="space-y-4">
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Student Name</p>
+            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">{t.student}</p>
             <p className="text-lg font-semibold text-gray-900">{result.data?.recipientName}</p>
           </div>
           
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Degree</p>
+            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">{t.degree}</p>
             <p className="text-lg font-semibold text-gray-900">{result.data?.degree}</p>
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Institution</p>
+              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">{t.institution}</p>
               <p className="font-semibold text-gray-900">{result.data?.institution}</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Graduation Date</p>
+              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">{t.date}</p>
               <p className="font-semibold text-gray-900">{result.data?.graduationDate}</p>
             </div>
           </div>
@@ -157,7 +181,7 @@ export default function VerifyPage() {
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Cryptographically secured by Ed25519
+            {t.secured}
           </p>
         </div>
       </div>
